@@ -4,6 +4,10 @@ body {
     color: #444;
 }
 
+main {
+    min-height: 82.5vh;
+}
+
 .container-fluid {
     max-width: 1400px;
 }
@@ -205,13 +209,6 @@ section h2 {
 .btn-success:hover {
     background-color: #5d8559;
     border-color: #5d8559;
-}
-
-.footercopyrightsect {
-    background-color: #4b8346;
-}
-.footer-terms-policy-links li {
-    display: inline-block;
 }
 
 #banner {
