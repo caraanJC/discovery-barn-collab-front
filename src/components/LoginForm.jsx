@@ -31,7 +31,6 @@ const LogInForm = (props) => {
 				})
 				.then((res) => {
 					if (res.data.success) {
-						console.log(res.data.userKey);
 						sessionStorage.setItem('parentToken', res.data.userKey);
 						sessionStorage.setItem('parentUserSignedIn', res.data.nameOfUser);
 						dispatch({

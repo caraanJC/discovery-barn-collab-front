@@ -20,7 +20,6 @@ const Students = (props) => {
 	useEffect(() => {
 		axios.get('https://safe-beyond-96213.herokuapp.com/api/students').then((res) => {
 			dispatch({ type: 'FETCH_STUDENTS', payload: res.data });
-			console.log(res.data);
 		});
 
 		axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
@@ -96,7 +95,6 @@ const Students = (props) => {
 				parent_id: parent,
 				program_id: programs,
 			};
-			console.log(newStudent);
 			if (targetStudentId === 'ADD') {
 				axios.post('https://safe-beyond-96213.herokuapp.com/api/students', newStudent).then((res) => {
 					if (res.data.success) {

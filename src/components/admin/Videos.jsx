@@ -21,7 +21,6 @@ const Videos = (props) => {
 	useEffect(() => {
 		axios.get('https://safe-beyond-96213.herokuapp.com/api/videos').then((res) => {
 			dispatch({ type: 'FETCH_VIDEOS', payload: res.data });
-			console.log(res.data);
 		});
 
 		axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
@@ -99,7 +98,6 @@ const Videos = (props) => {
 				video_path: video,
 				active_flag: isActive,
 			};
-			console.log(newVideo);
 			if (targetVideoId === 'ADD') {
 				axios.post('https://safe-beyond-96213.herokuapp.com/api/videos', newVideo).then((res) => {
 					if (res.data.success) {

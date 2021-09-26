@@ -31,7 +31,6 @@ const AdminLoginForm = (props) => {
 				})
 				.then((res) => {
 					if (res.data.success) {
-						console.log(res.data.userKey);
 						sessionStorage.setItem('adminToken', res.data.userKey);
 						sessionStorage.setItem('adminUserSignedIn', res.data.nameOfUser);
 						dispatch({

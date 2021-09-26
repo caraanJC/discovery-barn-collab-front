@@ -65,7 +65,6 @@ const Programs = (props) => {
 				name: programName,
 				active_flag: isActive === 'true' ? true : false,
 			};
-			console.log(newProgram);
 			if (targetProgramId === 'ADD') {
 				axios.post('https://safe-beyond-96213.herokuapp.com/api/programs', newProgram).then((res) => {
 					if (res.data.success) {
