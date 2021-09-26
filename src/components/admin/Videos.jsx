@@ -19,12 +19,12 @@ const Videos = (props) => {
 	const [program, setProgram] = useState('');
 
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/videos').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/videos').then((res) => {
 			dispatch({ type: 'FETCH_VIDEOS', payload: res.data });
 			console.log(res.data);
 		});
 
-		axios.get('http://localhost:8000/api/programs').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
 			dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
 		});
 	}, []);
@@ -41,9 +41,9 @@ const Videos = (props) => {
 	};
 
 	const handleVideoDelete = (id) => {
-		axios.delete(`http://localhost:8000/api/videos/${id}`).then((res) => {
+		axios.delete(`https://safe-beyond-96213.herokuapp.com/api/videos/${id}`).then((res) => {
 			if (res.data.deletedCount === 1) {
-				axios.get('http://localhost:8000/api/videos').then((res) => {
+				axios.get('https://safe-beyond-96213.herokuapp.com/api/videos').then((res) => {
 					dispatch({ type: 'FETCH_VIDEOS', payload: res.data });
 				});
 			} else {
@@ -53,7 +53,7 @@ const Videos = (props) => {
 	};
 
 	const handleVideoTableRefresh = () => {
-		axios.get('http://localhost:8000/api/videos').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/videos').then((res) => {
 			dispatch({ type: 'FETCH_VIDEOS', payload: res.data });
 		});
 	};
@@ -101,46 +101,35 @@ const Videos = (props) => {
 			};
 			console.log(newVideo);
 			if (targetVideoId === 'ADD') {
-				axios
-					.post('http://localhost:8000/api/videos', newVideo)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearVideoModal();
-							axios
-								.get('http://localhost:8000/api/videos')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_VIDEOS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.post('https://safe-beyond-96213.herokuapp.com/api/videos', newVideo).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearVideoModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/videos').then((res) => {
+							dispatch({
+								type: 'FETCH_VIDEOS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			} else {
-				axios
-					.put(
-						`http://localhost:8000/api/videos/${targetVideoId}`,
-						newVideo
-					)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearVideoModal();
-							axios
-								.get('http://localhost:8000/api/videos')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_VIDEOS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.put(`https://safe-beyond-96213.herokuapp.com/api/videos/${targetVideoId}`, newVideo).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearVideoModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/videos').then((res) => {
+							dispatch({
+								type: 'FETCH_VIDEOS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			}
 		}
 	};
@@ -242,42 +231,23 @@ const Videos = (props) => {
 				</div>
 			</div>
 
-			<Modal
-				show={showModalFlag}
-				onHide={() => handleModalHidden()}
-				keyboard={false}
-			>
+			<Modal show={showModalFlag} onHide={() => handleModalHidden()} keyboard={false}>
 				<Modal.Header closeButton>
-					<Modal.Title>
-						{targetVideoId === 'ADD' ? 'New Video' : 'Edit Video'}
-					</Modal.Title>
+					<Modal.Title>{targetVideoId === 'ADD' ? 'New Video' : 'Edit Video'}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>Title*</Form.Label>
-						<Form.Control
-							type='text'
-							value={title}
-							onChange={(e) => handleOnInputChange(e, 'title')}
-						/>
+						<Form.Control type='text' value={title} onChange={(e) => handleOnInputChange(e, 'title')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Description</Form.Label>
-						<Form.Control
-							type='text'
-							value={description}
-							onChange={(e) =>
-								handleOnInputChange(e, 'description')
-							}
-						/>
+						<Form.Control type='text' value={description} onChange={(e) => handleOnInputChange(e, 'description')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Program*</Form.Label>
-						<Form.Select
-							value={program}
-							onChange={(e) => handleOnInputChange(e, 'program')}
-						>
+						<Form.Select value={program} onChange={(e) => handleOnInputChange(e, 'program')}>
 							<option value=''></option>
 							{programList.map((p) => {
 								return (
@@ -290,48 +260,26 @@ const Videos = (props) => {
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Lesson Date*</Form.Label>
-						<Form.Control
-							type='date'
-							value={lessonDate}
-							onChange={(e) =>
-								handleOnInputChange(e, 'lessondate')
-							}
-						/>
+						<Form.Control type='date' value={lessonDate} onChange={(e) => handleOnInputChange(e, 'lessondate')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Image Path</Form.Label>
-						<Form.Control
-							type='text'
-							value={image}
-							onChange={(e) => handleOnInputChange(e, 'image')}
-						/>
+						<Form.Control type='text' value={image} onChange={(e) => handleOnInputChange(e, 'image')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Video Path</Form.Label>
-						<Form.Control
-							type='text'
-							value={video}
-							onChange={(e) => handleOnInputChange(e, 'video')}
-						/>
+						<Form.Control type='text' value={video} onChange={(e) => handleOnInputChange(e, 'video')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Active Flag*</Form.Label>
-						<Form.Select
-							value={isActive}
-							onChange={(e) =>
-								handleOnInputChange(e, 'activeflag')
-							}
-						>
+						<Form.Select value={isActive} onChange={(e) => handleOnInputChange(e, 'activeflag')}>
 							<option value='true'>True</option>
 							<option value='false'>False</option>
 						</Form.Select>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					<Button
-						className='myButton'
-						onClick={() => handleAddEditVideo()}
-					>
+					<Button className='myButton' onClick={() => handleAddEditVideo()}>
 						<i className='fa fa-save' /> Save
 					</Button>
 				</Modal.Footer>

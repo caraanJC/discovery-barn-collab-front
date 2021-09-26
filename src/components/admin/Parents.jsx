@@ -15,7 +15,7 @@ const Parents = (props) => {
 	const [isActive, setIsActive] = useState('true');
 
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/parents').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
 			dispatch({ type: 'FETCH_PARENTS', payload: res.data });
 		});
 	}, []);
@@ -29,9 +29,9 @@ const Parents = (props) => {
 	};
 
 	const handleParentDelete = (id) => {
-		axios.delete(`http://localhost:8000/api/parents/${id}`).then((res) => {
+		axios.delete(`https://safe-beyond-96213.herokuapp.com/api/parents/${id}`).then((res) => {
 			if (res.data.deletedCount === 1) {
-				axios.get('http://localhost:8000/api/parents').then((res) => {
+				axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
 					dispatch({ type: 'FETCH_PARENTS', payload: res.data });
 				});
 			} else {
@@ -41,7 +41,7 @@ const Parents = (props) => {
 	};
 
 	const handleParentTableRefresh = () => {
-		axios.get('http://localhost:8000/api/parents').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
 			dispatch({ type: 'FETCH_PARENTS', payload: res.data });
 		});
 	};
@@ -79,46 +79,35 @@ const Parents = (props) => {
 				active_flag: isActive === 'true' ? true : false,
 			};
 			if (targetParentId === 'ADD') {
-				axios
-					.post('http://localhost:8000/api/parents', newParent)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearParentModal();
-							axios
-								.get('http://localhost:8000/api/parents')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_PARENTS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.post('https://safe-beyond-96213.herokuapp.com/api/parents', newParent).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearParentModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
+							dispatch({
+								type: 'FETCH_PARENTS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			} else {
-				axios
-					.put(
-						`http://localhost:8000/api/parents/${targetParentId}`,
-						newParent
-					)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearParentModal();
-							axios
-								.get('http://localhost:8000/api/parents')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_PARENTS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.put(`https://safe-beyond-96213.herokuapp.com/api/parents/${targetParentId}`, newParent).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearParentModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
+							dispatch({
+								type: 'FETCH_PARENTS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			}
 		}
 	};
@@ -202,64 +191,34 @@ const Parents = (props) => {
 				</div>
 			</div>
 
-			<Modal
-				show={showModalFlag}
-				onHide={() => handleModalHidden()}
-				keyboard={false}
-			>
+			<Modal show={showModalFlag} onHide={() => handleModalHidden()} keyboard={false}>
 				<Modal.Header closeButton>
-					<Modal.Title>
-						{targetParentId === 'ADD'
-							? 'New Parent'
-							: 'Edit Parent'}
-					</Modal.Title>
+					<Modal.Title>{targetParentId === 'ADD' ? 'New Parent' : 'Edit Parent'}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>First Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={firstName}
-							onChange={(e) =>
-								handleOnInputChange(e, 'firstname')
-							}
-						/>
+						<Form.Control type='text' value={firstName} onChange={(e) => handleOnInputChange(e, 'firstname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Last Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={lastName}
-							onChange={(e) => handleOnInputChange(e, 'lastname')}
-						/>
+						<Form.Control type='text' value={lastName} onChange={(e) => handleOnInputChange(e, 'lastname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Email Address*</Form.Label>
-						<Form.Control
-							type='email'
-							value={email}
-							onChange={(e) => handleOnInputChange(e, 'email')}
-						/>
+						<Form.Control type='email' value={email} onChange={(e) => handleOnInputChange(e, 'email')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Active Flag*</Form.Label>
-						<Form.Select
-							value={isActive}
-							onChange={(e) =>
-								handleOnInputChange(e, 'activeflag')
-							}
-						>
+						<Form.Select value={isActive} onChange={(e) => handleOnInputChange(e, 'activeflag')}>
 							<option value='true'>True</option>
 							<option value='false'>False</option>
 						</Form.Select>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					<Button
-						className='myButton'
-						onClick={() => handleAddEditParent()}
-					>
+					<Button className='myButton' onClick={() => handleAddEditParent()}>
 						<i className='fa fa-save' /> Save
 					</Button>
 				</Modal.Footer>

@@ -16,7 +16,7 @@ const Users = (props) => {
 	const [isAdmin, setIsAdmin] = useState('true');
 
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/users').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/users').then((res) => {
 			dispatch({ type: 'FETCH_USERS', payload: res.data });
 		});
 	}, []);
@@ -31,9 +31,9 @@ const Users = (props) => {
 	};
 
 	const handleUserDelete = (id) => {
-		axios.delete(`http://localhost:8000/api/users/${id}`).then((res) => {
+		axios.delete(`https://safe-beyond-96213.herokuapp.com/api/users/${id}`).then((res) => {
 			if (res.data.deletedCount === 1) {
-				axios.get('http://localhost:8000/api/users').then((res) => {
+				axios.get('https://safe-beyond-96213.herokuapp.com/api/users').then((res) => {
 					dispatch({ type: 'FETCH_USERS', payload: res.data });
 				});
 			} else {
@@ -43,7 +43,7 @@ const Users = (props) => {
 	};
 
 	const handleUserTableRefresh = () => {
-		axios.get('http://localhost:8000/api/users').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/users').then((res) => {
 			dispatch({ type: 'FETCH_USERS', payload: res.data });
 		});
 	};
@@ -83,46 +83,35 @@ const Users = (props) => {
 				admin_flag: isAdmin === 'true' ? true : false,
 			};
 			if (targetUserId === 'ADD') {
-				axios
-					.post('http://localhost:8000/api/users', newUser)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearUserModal();
-							axios
-								.get('http://localhost:8000/api/users')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_USERS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.post('https://safe-beyond-96213.herokuapp.com/api/users', newUser).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearUserModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/users').then((res) => {
+							dispatch({
+								type: 'FETCH_USERS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			} else {
-				axios
-					.put(
-						`http://localhost:8000/api/users/${targetUserId}`,
-						newUser
-					)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearUserModal();
-							axios
-								.get('http://localhost:8000/api/users')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_USERS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.put(`https://safe-beyond-96213.herokuapp.com/api/users/${targetUserId}`, newUser).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearUserModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/users').then((res) => {
+							dispatch({
+								type: 'FETCH_USERS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			}
 		}
 	};
@@ -212,74 +201,41 @@ const Users = (props) => {
 				</div>
 			</div>
 
-			<Modal
-				show={showModalFlag}
-				onHide={() => handleModalHidden()}
-				keyboard={false}
-			>
+			<Modal show={showModalFlag} onHide={() => handleModalHidden()} keyboard={false}>
 				<Modal.Header closeButton>
-					<Modal.Title>
-						{targetUserId === 'ADD' ? 'New User' : 'Edit User'}
-					</Modal.Title>
+					<Modal.Title>{targetUserId === 'ADD' ? 'New User' : 'Edit User'}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>First Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={firstName}
-							onChange={(e) =>
-								handleOnInputChange(e, 'firstname')
-							}
-						/>
+						<Form.Control type='text' value={firstName} onChange={(e) => handleOnInputChange(e, 'firstname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Last Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={lastName}
-							onChange={(e) => handleOnInputChange(e, 'lastname')}
-						/>
+						<Form.Control type='text' value={lastName} onChange={(e) => handleOnInputChange(e, 'lastname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Email Address*</Form.Label>
-						<Form.Control
-							type='email'
-							value={email}
-							onChange={(e) => handleOnInputChange(e, 'email')}
-						/>
+						<Form.Control type='email' value={email} onChange={(e) => handleOnInputChange(e, 'email')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Active Flag*</Form.Label>
-						<Form.Select
-							value={isActive}
-							onChange={(e) =>
-								handleOnInputChange(e, 'activeflag')
-							}
-						>
+						<Form.Select value={isActive} onChange={(e) => handleOnInputChange(e, 'activeflag')}>
 							<option value='true'>True</option>
 							<option value='false'>False</option>
 						</Form.Select>
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Admin Flag*</Form.Label>
-						<Form.Select
-							value={isAdmin}
-							onChange={(e) =>
-								handleOnInputChange(e, 'adminflag')
-							}
-						>
+						<Form.Select value={isAdmin} onChange={(e) => handleOnInputChange(e, 'adminflag')}>
 							<option value='true'>True</option>
 							<option value='false'>False</option>
 						</Form.Select>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					<Button
-						className='myButton'
-						onClick={() => handleAddEditUser()}
-					>
+					<Button className='myButton' onClick={() => handleAddEditUser()}>
 						<i className='fa fa-save' /> Save
 					</Button>
 				</Modal.Footer>

@@ -16,10 +16,10 @@ const Videos = (props) => {
 
 	useEffect(() => {
 		if (programId !== '') {
-			axios.get(`https://safe-beyond-96213.herokuapp.com//api/programs/${programId}`).then((res) => {
+			axios.get(`https://safe-beyond-96213.herokuapp.com/api/programs/${programId}`).then((res) => {
 				setProgram(res.data.name);
 			});
-			axios.get(`https://safe-beyond-96213.herokuapp.com//api/videos/${programId}`).then((res) => {
+			axios.get(`https://safe-beyond-96213.herokuapp.com/api/videos/${programId}`).then((res) => {
 				dispatch({
 					type: 'FETCH_PROGRAM_VIDEOS',
 					payload: res.data,

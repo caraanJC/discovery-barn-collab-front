@@ -18,16 +18,16 @@ const Students = (props) => {
 	const [programs, setPrograms] = useState('');
 
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/students').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/students').then((res) => {
 			dispatch({ type: 'FETCH_STUDENTS', payload: res.data });
 			console.log(res.data);
 		});
 
-		axios.get('http://localhost:8000/api/parents').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/parents').then((res) => {
 			dispatch({ type: 'FETCH_PARENTS', payload: res.data });
 		});
 
-		axios.get('http://localhost:8000/api/programs').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
 			dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
 		});
 	}, []);
@@ -42,9 +42,9 @@ const Students = (props) => {
 	};
 
 	const handleStudentDelete = (id) => {
-		axios.delete(`http://localhost:8000/api/students/${id}`).then((res) => {
+		axios.delete(`https://safe-beyond-96213.herokuapp.com/api/students/${id}`).then((res) => {
 			if (res.data.deletedCount === 1) {
-				axios.get('http://localhost:8000/api/students').then((res) => {
+				axios.get('https://safe-beyond-96213.herokuapp.com/api/students').then((res) => {
 					dispatch({ type: 'FETCH_STUDENTS', payload: res.data });
 				});
 			} else {
@@ -54,7 +54,7 @@ const Students = (props) => {
 	};
 
 	const handleStudentTableRefresh = () => {
-		axios.get('http://localhost:8000/api/students').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/students').then((res) => {
 			dispatch({ type: 'FETCH_STUDENTS', payload: res.data });
 		});
 	};
@@ -98,46 +98,35 @@ const Students = (props) => {
 			};
 			console.log(newStudent);
 			if (targetStudentId === 'ADD') {
-				axios
-					.post('http://localhost:8000/api/students', newStudent)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearStudentModal();
-							axios
-								.get('http://localhost:8000/api/students')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_STUDENTS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.post('https://safe-beyond-96213.herokuapp.com/api/students', newStudent).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearStudentModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/students').then((res) => {
+							dispatch({
+								type: 'FETCH_STUDENTS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			} else {
-				axios
-					.put(
-						`http://localhost:8000/api/students/${targetStudentId}`,
-						newStudent
-					)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearStudentModal();
-							axios
-								.get('http://localhost:8000/api/students')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_STUDENTS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.put(`https://safe-beyond-96213.herokuapp.com/api/students/${targetStudentId}`, newStudent).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearStudentModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/students').then((res) => {
+							dispatch({
+								type: 'FETCH_STUDENTS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			}
 		}
 	};
@@ -227,52 +216,27 @@ const Students = (props) => {
 				</div>
 			</div>
 
-			<Modal
-				show={showModalFlag}
-				onHide={() => handleModalHidden()}
-				keyboard={false}
-			>
+			<Modal show={showModalFlag} onHide={() => handleModalHidden()} keyboard={false}>
 				<Modal.Header closeButton>
-					<Modal.Title>
-						{targetStudentId === 'ADD'
-							? 'New Student'
-							: 'Edit Student'}
-					</Modal.Title>
+					<Modal.Title>{targetStudentId === 'ADD' ? 'New Student' : 'Edit Student'}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>First Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={firstName}
-							onChange={(e) =>
-								handleOnInputChange(e, 'firstname')
-							}
-						/>
+						<Form.Control type='text' value={firstName} onChange={(e) => handleOnInputChange(e, 'firstname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Last Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={lastName}
-							onChange={(e) => handleOnInputChange(e, 'lastname')}
-						/>
+						<Form.Control type='text' value={lastName} onChange={(e) => handleOnInputChange(e, 'lastname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Age*</Form.Label>
-						<Form.Control
-							type='number'
-							value={age}
-							onChange={(e) => handleOnInputChange(e, 'age')}
-						/>
+						<Form.Control type='number' value={age} onChange={(e) => handleOnInputChange(e, 'age')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Parent*</Form.Label>
-						<Form.Select
-							value={parent}
-							onChange={(e) => handleOnInputChange(e, 'parent')}
-						>
+						<Form.Select value={parent} onChange={(e) => handleOnInputChange(e, 'parent')}>
 							<option value=''></option>
 							{parentList.map((p) => {
 								return (
@@ -286,10 +250,7 @@ const Students = (props) => {
 
 					<Form.Group className='mb-3'>
 						<Form.Label>Programs*</Form.Label>
-						<Form.Select
-							value={programs}
-							onChange={(e) => handleOnInputChange(e, 'programs')}
-						>
+						<Form.Select value={programs} onChange={(e) => handleOnInputChange(e, 'programs')}>
 							<option value=''></option>
 							{programList.map((p) => {
 								return (
@@ -302,10 +263,7 @@ const Students = (props) => {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					<Button
-						className='myButton'
-						onClick={() => handleAddEditStudent()}
-					>
+					<Button className='myButton' onClick={() => handleAddEditStudent()}>
 						<i className='fa fa-save' /> Save
 					</Button>
 				</Modal.Footer>

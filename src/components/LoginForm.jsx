@@ -25,7 +25,7 @@ const LogInForm = (props) => {
 			document.querySelector('#passwordfld').closest('.input-group').classList.add('witherror');
 		} else {
 			axios
-				.post('https://safe-beyond-96213.herokuapp.com//api/parents/login', {
+				.post('https://safe-beyond-96213.herokuapp.com/api/parents/login', {
 					email_address: email,
 					password: password,
 				})

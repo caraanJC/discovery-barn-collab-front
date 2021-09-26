@@ -26,13 +26,13 @@ const Logs = (props) => {
 	];
 
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/logs').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/logs').then((res) => {
 			dispatch({ type: 'FETCH_LOGS', payload: res.data });
 		});
 	}, []);
 
 	const handleLogTableRefresh = () => {
-		axios.get('http://localhost:8000/api/logs').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/logs').then((res) => {
 			dispatch({ type: 'FETCH_LOGS', payload: res.data });
 		});
 	};

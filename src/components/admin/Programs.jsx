@@ -13,7 +13,7 @@ const Programs = (props) => {
 	const [isActive, setIsActive] = useState('true');
 
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/programs').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
 			dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
 		});
 	}, []);
@@ -25,9 +25,9 @@ const Programs = (props) => {
 	};
 
 	const handleProgramDelete = (id) => {
-		axios.delete(`http://localhost:8000/api/programs/${id}`).then((res) => {
+		axios.delete(`https://safe-beyond-96213.herokuapp.com/api/programs/${id}`).then((res) => {
 			if (res.data.deletedCount === 1) {
-				axios.get('http://localhost:8000/api/programs').then((res) => {
+				axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
 					dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
 				});
 			} else {
@@ -37,7 +37,7 @@ const Programs = (props) => {
 	};
 
 	const handleProgramTableRefresh = () => {
-		axios.get('http://localhost:8000/api/programs').then((res) => {
+		axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
 			dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
 		});
 	};
@@ -67,46 +67,35 @@ const Programs = (props) => {
 			};
 			console.log(newProgram);
 			if (targetProgramId === 'ADD') {
-				axios
-					.post('http://localhost:8000/api/programs', newProgram)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearProgramModal();
-							axios
-								.get('http://localhost:8000/api/programs')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_PROGRAMS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.post('https://safe-beyond-96213.herokuapp.com/api/programs', newProgram).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearProgramModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
+							dispatch({
+								type: 'FETCH_PROGRAMS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			} else {
-				axios
-					.put(
-						`http://localhost:8000/api/programs/${targetProgramId}`,
-						newProgram
-					)
-					.then((res) => {
-						if (res.data.success) {
-							setShowModalFlag(false);
-							clearProgramModal();
-							axios
-								.get('http://localhost:8000/api/programs')
-								.then((res) => {
-									dispatch({
-										type: 'FETCH_PROGRAMS',
-										payload: res.data,
-									});
-								});
-						} else {
-							setAppMessage(res.data.message);
-						}
-					});
+				axios.put(`https://safe-beyond-96213.herokuapp.com/api/programs/${targetProgramId}`, newProgram).then((res) => {
+					if (res.data.success) {
+						setShowModalFlag(false);
+						clearProgramModal();
+						axios.get('https://safe-beyond-96213.herokuapp.com/api/programs').then((res) => {
+							dispatch({
+								type: 'FETCH_PROGRAMS',
+								payload: res.data,
+							});
+						});
+					} else {
+						setAppMessage(res.data.message);
+					}
+				});
 			}
 		}
 	};
@@ -178,48 +167,26 @@ const Programs = (props) => {
 				</div>
 			</div>
 
-			<Modal
-				show={showModalFlag}
-				onHide={() => handleModalHidden()}
-				keyboard={false}
-			>
+			<Modal show={showModalFlag} onHide={() => handleModalHidden()} keyboard={false}>
 				<Modal.Header closeButton>
-					<Modal.Title>
-						{targetProgramId === 'ADD'
-							? 'New Program'
-							: 'Edit Program'}
-					</Modal.Title>
+					<Modal.Title>{targetProgramId === 'ADD' ? 'New Program' : 'Edit Program'}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>Program Name*</Form.Label>
-						<Form.Control
-							type='text'
-							value={programName}
-							onChange={(e) =>
-								handleOnInputChange(e, 'programname')
-							}
-						/>
+						<Form.Control type='text' value={programName} onChange={(e) => handleOnInputChange(e, 'programname')} />
 					</Form.Group>
 					<Form.Group className='mb-3'>
 						<Form.Label>Active Flag*</Form.Label>
-						<Form.Select
-							value={isActive}
-							onChange={(e) =>
-								handleOnInputChange(e, 'activeflag')
-							}
-						>
+						<Form.Select value={isActive} onChange={(e) => handleOnInputChange(e, 'activeflag')}>
 							<option value='true'>True</option>
 							<option value='false'>False</option>
 						</Form.Select>
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					<Button
-						className='myButton'
-						onClick={() => handleAddEditProgram()}
-					>
+					<Button className='myButton' onClick={() => handleAddEditProgram()}>
 						<i className='fa fa-save' /> Save
 					</Button>
 				</Modal.Footer>

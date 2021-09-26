@@ -13,7 +13,7 @@ const Main = () => {
 	const parentChildren = useSelector((state) => state.parentChildren);
 
 	useEffect(() => {
-		axios.get(`https://safe-beyond-96213.herokuapp.com//api/parents/get-students/${parentToken}`).then((res) => {
+		axios.get(`https://safe-beyond-96213.herokuapp.com/api/parents/get-students/${parentToken}`).then((res) => {
 			dispatch({ type: 'FETCH_PARENT_CHILDREN', payload: res.data });
 		});
 	}, []);
