@@ -7,8 +7,7 @@ const LogInForm = (props) => {
 	const dispatch = useDispatch();
 
 	const handleOnSubmit = () => {
-		let regex =
-			/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		let regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 		let isEmail = regex.test(email);
 
 		let errorFields = document.querySelectorAll('.errormsg');
@@ -17,24 +16,16 @@ const LogInForm = (props) => {
 		}
 
 		if (email.trim() === '' || isEmail === false) {
-			document.querySelector('.emailErrorMsg').textContent =
-				'Please provide valid email address';
+			document.querySelector('.emailErrorMsg').textContent = 'Please provide valid email address';
 			document.querySelector('#emailaddressfld').focus();
-			document
-				.querySelector('#emailaddressfld')
-				.closest('.input-group')
-				.classList.add('witherror');
+			document.querySelector('#emailaddressfld').closest('.input-group').classList.add('witherror');
 		} else if (password.trim() === '') {
-			document.querySelector('.PasswordErrorMsg').textContent =
-				'Please provide password';
+			document.querySelector('.PasswordErrorMsg').textContent = 'Please provide password';
 			document.querySelector('#passwordfld').focus();
-			document
-				.querySelector('#passwordfld')
-				.closest('.input-group')
-				.classList.add('witherror');
+			document.querySelector('#passwordfld').closest('.input-group').classList.add('witherror');
 		} else {
 			axios
-				.post('http://localhost:8000/api/parents/login', {
+				.post('https://safe-beyond-96213.herokuapp.com//api/parents/login', {
 					email_address: email,
 					password: password,
 				})
@@ -42,10 +33,7 @@ const LogInForm = (props) => {
 					if (res.data.success) {
 						console.log(res.data.userKey);
 						sessionStorage.setItem('parentToken', res.data.userKey);
-						sessionStorage.setItem(
-							'parentUserSignedIn',
-							res.data.nameOfUser
-						);
+						sessionStorage.setItem('parentUserSignedIn', res.data.nameOfUser);
 						dispatch({
 							type: 'SET_PARENT_TOKEN',
 							payload: res.data.userKey,
@@ -55,13 +43,9 @@ const LogInForm = (props) => {
 							payload: res.data.nameOfUser,
 						});
 					} else {
-						document.querySelector('.emailErrorMsg').textContent =
-							res.data.message;
+						document.querySelector('.emailErrorMsg').textContent = res.data.message;
 						document.querySelector('#emailaddressfld').focus();
-						document
-							.querySelector('#emailaddressfld')
-							.closest('.input-group')
-							.classList.add('witherror');
+						document.querySelector('#emailaddressfld').closest('.input-group').classList.add('witherror');
 					}
 				});
 		}
@@ -74,10 +58,7 @@ const LogInForm = (props) => {
 					<div className='info-section'>
 						<div className='info-section-content'>
 							<h1>Distance Learning</h1>
-							<img
-								src='./assets/images/admin-login-logo.png'
-								alt='Admin Login'
-							/>
+							<img src='./assets/images/admin-login-logo.png' alt='Admin Login' />
 						</div>
 					</div>
 					<div className='login-section'>
@@ -87,14 +68,7 @@ const LogInForm = (props) => {
 							<label>Email</label>
 							<div className='input-group'>
 								<span className='fa fa-envelope'></span>
-								<input
-									type='email'
-									id='emailaddressfld'
-									placeholder='Enter Your Email'
-									onChange={(e) => setEmail(e.target.value)}
-									value={email}
-									required
-								/>
+								<input type='email' id='emailaddressfld' placeholder='Enter Your Email' onChange={(e) => setEmail(e.target.value)} value={email} required />
 							</div>
 							<div className='emailErrorMsg errormsg'></div>
 						</div>
@@ -102,25 +76,11 @@ const LogInForm = (props) => {
 							<label>Password</label>
 							<div className='input-group'>
 								<span className='fa fa-lock'></span>
-								<input
-									type='password'
-									id='passwordfld'
-									placeholder='Enter Your Password'
-									onChange={(e) =>
-										setPassword(e.target.value)
-									}
-									value={password}
-									required
-								/>
+								<input type='password' id='passwordfld' placeholder='Enter Your Password' onChange={(e) => setPassword(e.target.value)} value={password} required />
 							</div>
 							<div className='PasswordErrorMsg errormsg'></div>
 						</div>
-						<button
-							className='btn btn-danger btn-block'
-							id='loginbtn'
-							type='submit'
-							onClick={() => handleOnSubmit()}
-						>
+						<button className='btn btn-danger btn-block' id='loginbtn' type='submit' onClick={() => handleOnSubmit()}>
 							Login
 						</button>
 					</div>

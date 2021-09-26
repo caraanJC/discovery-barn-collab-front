@@ -16,19 +16,15 @@ const Videos = (props) => {
 
 	useEffect(() => {
 		if (programId !== '') {
-			axios
-				.get(`http://localhost:8000/api/programs/${programId}`)
-				.then((res) => {
-					setProgram(res.data.name);
+			axios.get(`https://safe-beyond-96213.herokuapp.com//api/programs/${programId}`).then((res) => {
+				setProgram(res.data.name);
+			});
+			axios.get(`https://safe-beyond-96213.herokuapp.com//api/videos/${programId}`).then((res) => {
+				dispatch({
+					type: 'FETCH_PROGRAM_VIDEOS',
+					payload: res.data,
 				});
-			axios
-				.get(`http://localhost:8000/api/videos/${programId}`)
-				.then((res) => {
-					dispatch({
-						type: 'FETCH_PROGRAM_VIDEOS',
-						payload: res.data,
-					});
-				});
+			});
 		} else {
 			dispatch({
 				type: 'FETCH_PROGRAM_VIDEOS',
@@ -45,19 +41,11 @@ const Videos = (props) => {
 				<div className='d-flex align-items-bottom justify-content-between'>
 					<h2>Videos</h2>
 
-					<select
-						className='form-select form-select-md mb-3 '
-						aria-label='.form-select-md'
-						id='childselection'
-						onChange={(e) => handleOnChange(e)}
-					>
+					<select className='form-select form-select-md mb-3 ' aria-label='.form-select-md' id='childselection' onChange={(e) => handleOnChange(e)}>
 						<option value=''>Select A Student</option>
 						{parentChildren.map((child) => {
 							return (
-								<option
-									key={child._id}
-									value={child.program_id}
-								>
+								<option key={child._id} value={child.program_id}>
 									{child.first_name} {child.last_name}
 								</option>
 							);
@@ -78,36 +66,17 @@ const Videos = (props) => {
 							day: 'numeric',
 						};
 						return (
-							<div
-								key={video._id}
-								className='col-xl-3 col-lg-4 col-sm-6 mb-4'
-							>
+							<div key={video._id} className='col-xl-3 col-lg-4 col-sm-6 mb-4'>
 								<div className='dbp-thumbnail card'>
-									<Link
-										to={`/videos/${video._id}`}
-										className='card-img-container'
-									>
-										<img
-											className='card-img-top img-responsive'
-											src={video.thumbnail_path}
-											alt={video.title}
-										/>
+									<Link to={`/videos/${video._id}`} className='card-img-container'>
+										<img className='card-img-top img-responsive' src={video.thumbnail_path} alt={video.title} />
 									</Link>
 									<div className='card-body'>
 										<h6 className='card-title'>
-											<Link to={`/videos/${video._id}`}>
-												{video.title}
-											</Link>
+											<Link to={`/videos/${video._id}`}>{video.title}</Link>
 										</h6>
-										<h6 className='card-subtitle mb-3'>
-											{lessondate.toLocaleDateString(
-												'en-US',
-												dateformat
-											)}
-										</h6>
-										<p className='card-text'>
-											{video.description}
-										</p>
+										<h6 className='card-subtitle mb-3'>{lessondate.toLocaleDateString('en-US', dateformat)}</h6>
+										<p className='card-text'>{video.description}</p>
 									</div>
 								</div>
 							</div>

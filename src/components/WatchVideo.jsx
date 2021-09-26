@@ -10,7 +10,7 @@ const WatchVideo = (props) => {
 	const [video, setVideo] = useState('');
 
 	useEffect(() => {
-		axios.get(`http://localhost:8000/api/videos/info/${id}`).then((res) => {
+		axios.get(`https://safe-beyond-96213.herokuapp.com//api/videos/info/${id}`).then((res) => {
 			let lessondate = new Date(res.data.lesson_date);
 			let dateformat = {
 				weekday: 'long',

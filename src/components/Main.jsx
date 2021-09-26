@@ -13,13 +13,9 @@ const Main = () => {
 	const parentChildren = useSelector((state) => state.parentChildren);
 
 	useEffect(() => {
-		axios
-			.get(
-				`http://localhost:8000/api/parents/get-students/${parentToken}`
-			)
-			.then((res) => {
-				dispatch({ type: 'FETCH_PARENT_CHILDREN', payload: res.data });
-			});
+		axios.get(`https://safe-beyond-96213.herokuapp.com//api/parents/get-students/${parentToken}`).then((res) => {
+			dispatch({ type: 'FETCH_PARENT_CHILDREN', payload: res.data });
+		});
 	}, []);
 
 	const onToggleSideNav = () => {
@@ -38,31 +34,17 @@ const Main = () => {
 				<a className='navbar-brand' href='/'>
 					Distance Learning
 				</a>
-				<button
-					className='btn btn-link btn-sm order-1 order-lg-0'
-					id='sidebarToggle'
-					href='#'
-					onClick={() => onToggleSideNav()}
-				>
+				<button className='btn btn-link btn-sm order-1 order-lg-0' id='sidebarToggle' href='#' onClick={() => onToggleSideNav()}>
 					<i className='fa fa-bars'></i>
 				</button>
 				<div class='d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0'></div>
 
 				<ul className='navbar-nav ml-auto ml-md-0'>
 					<li className='nav-item dropdown'>
-						<a
-							class='nav-link dropdown-toggle'
-							type='button'
-							id='dropdownMenuButton1'
-							data-bs-toggle='dropdown'
-							aria-expanded='false'
-						>
+						<a class='nav-link dropdown-toggle' type='button' id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'>
 							<i className='fa fa-user fa-fw'></i>
 						</a>
-						<ul
-							class='dropdown-menu'
-							aria-labelledby='dropdownMenuButton1'
-						>
+						<ul class='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
 							<li>
 								<a class='dropdown-item' href='#'>
 									Change Password
@@ -79,15 +61,10 @@ const Main = () => {
 			</nav>
 			<div id='layoutSidenav'>
 				<div id='layoutSidenav_nav'>
-					<nav
-						className='sb-sidenav accordion sb-sidenav-light'
-						id='sidenavAccordion'
-					>
+					<nav className='sb-sidenav accordion sb-sidenav-light' id='sidenavAccordion'>
 						<div className='sb-sidenav-menu'>
 							<div className='nav'>
-								<div className='sb-sidenav-menu-heading'>
-									ONLINE RESOURCES
-								</div>
+								<div className='sb-sidenav-menu-heading'>ONLINE RESOURCES</div>
 								<Link to='/videos' className='nav-link'>
 									<div className='sb-nav-link-icon'>
 										<i className='fa fa-film'></i>
@@ -105,24 +82,14 @@ const Main = () => {
 				<div id='layoutSidenav_content'>
 					<main>
 						<Switch>
-							<Route
-								exact
-								path='/videos'
-								render={() => <Videos />}
-							/>
-							<Route
-								exact
-								path='/videos/:id'
-								render={() => <WatchVideo />}
-							/>
+							<Route exact path='/videos' render={() => <Videos />} />
+							<Route exact path='/videos/:id' render={() => <WatchVideo />} />
 						</Switch>
 					</main>
 					<footer className='py-4 bg-light mt-auto'>
 						<div className='container-fluid'>
 							<div className='d-flex align-items-center justify-content-between small'>
-								<div className='text-muted'>
-									Copyright &copy; Distance Learning
-								</div>
+								<div className='text-muted'>Copyright &copy; Distance Learning</div>
 							</div>
 						</div>
 					</footer>
