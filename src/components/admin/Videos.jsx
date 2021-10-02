@@ -2,10 +2,12 @@ import MaterialTable from 'material-table';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { Modal, Form, Button } from 'react-bootstrap';
-import storage from './firebase';
+import { Modal, Form, Button, ProgressBar } from 'react-bootstrap';
+import firebaseApp from './firebase';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 //import Compress from "react-image-file-resizer";
 import {formatDate,renderActiveTags} from '../../helper/functions';
+import { v4 as uuidv4 } from 'uuid';
 
 const Videos = (props) => {
 	const data = useSelector((state) => state.videos);
@@ -28,9 +30,9 @@ const Videos = (props) => {
 	const [targetShownVideo, setTargetShownVideo] = useState('');
 	const [targetShownType, setTargetShownType] = useState('');
 	const [uploadState,setUploadState] = useState(false);
-	const [uploadStateMessage,setuploadStateMessage] = useState('');
 	const forUploadBtn = uploadState===false?'':'hidden';
 	const loadingBtn = uploadState===false?'hidden':'';
+	const [uploadProgress, setUploadProgress] = useState(0);
 	useEffect(() => {
 		axios.get('http://localhost:8000/api/videos').then((res) => {	
 			let temp = res.data.map(data =>{
@@ -71,7 +73,6 @@ const Videos = (props) => {
 	}
 
 	const handleOnFileUpload = () => {
-		console.log(fileToUpload.type);
 		let directory = uploadType==='IMG'?'images':'videos';
 		if(uploadType===''||uploadType===null){
 			setAppMessage("Please select upload type");
@@ -83,26 +84,45 @@ const Videos = (props) => {
 			setAppMessage("Invalid File Type");
 		}
 		else{
-			const uploadFile = storage.ref(`${directory}/${fileToUpload.name}`).put(fileToUpload);
+			setAppMessage("");
+			const randomStr = uuidv4();
+			const storage = getStorage();
+			const metadata = {
+				contentType: fileToUpload.type
+			};
+			const storageRef = ref(storage, `${directory}/` + fileToUpload.name+'__DBP'+randomStr);
+			const uploadFile = uploadBytesResumable(storageRef, fileToUpload, metadata);
+			
 			uploadFile.on(
 								'state_changed', 
 								(snapshot)=>{
 									setUploadState(true);
-								},//progress
-								(error)=>{//error
-									console.log(error);
+									const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+									setUploadProgress(progress);
+									switch (snapshot.state) {
+										case 'paused':
+											//console.log('Upload is paused');
+											break;
+										case 'running':
+											//console.log('Upload is running: ');
+											break;
+										default: break
+									}
 								},
-								()=>{//completion
-										storage.ref(directory).child(fileToUpload.name).getDownloadURL().then(url=>{
-											setAppMessage('');
+								(error)=>{
+									console.log(error);
+									setUploadProgress(0);
+								},
+								()=>{
+										getDownloadURL(uploadFile.snapshot.ref).then((url) => {
 											setUploadState(false);
 											axios.put(`http://localhost:8000/api/videos/upload-file/${videoObjectId}/${uploadType}`,{path:url}).then((res) => {
 												let updatedVideos = data.map((video)=>{
 																		if(video._id===videoObjectId){
-																			if(uploadType=='IMG'){
+																			if(uploadType==='IMG'){
 																				video.thumbnail_path=url;
 																			}
-																			else if(uploadType=='VID'){
+																			else if(uploadType==='VID'){
 																				video.video_path=url;
 																			}
 																			
@@ -111,7 +131,7 @@ const Videos = (props) => {
 																	});
 												dispatch({ type: 'FETCH_VIDEOS', payload: updatedVideos });
 												handleUploadModalHidden();
-												console.log(res);
+												setUploadProgress(0);
 											});
 
 										});
@@ -421,6 +441,7 @@ const Videos = (props) => {
 					<Modal.Title>Upload</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
+				
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>Type*</Form.Label>
@@ -433,12 +454,13 @@ const Videos = (props) => {
 					<Form.Group className='mb-3'>
 						<Form.Label>File*</Form.Label>
 						<Form.Control type='file' onChange={(e) => handleOnUploadFileChange(e)} />
+						<ProgressBar className='mt-2' variant="success" now={uploadProgress} />
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					
+				
 					<Button className='myButton' disabled={uploadState} onClick={() => handleOnFileUpload()}>
-						<span className={loadingBtn}><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading... </span>
+						<span className={loadingBtn}><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...</span>
 						<span className={forUploadBtn}><i className='fa fa-upload' /> Upload</span>
 					</Button>
 				</Modal.Footer>

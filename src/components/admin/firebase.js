@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
 const firebaseConfig = {
 	apiKey: 'AIzaSyCIUDN1zjuBVwIKcsYchW46gbEBtA9J23Y',
 	authDomain: 'discoverybarnpreschooluplift.firebaseapp.com',
@@ -11,5 +10,6 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const storage = getStorage(firebaseApp);
-export default storage;
+export default firebaseApp;
+
+
