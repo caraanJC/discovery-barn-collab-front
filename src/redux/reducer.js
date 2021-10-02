@@ -11,6 +11,8 @@ const initState = {
 	students: [],
 	videos: [],
 	programVideos: [],
+	announcements: [],
+	submissions: [],
 };
 
 const reducer = (state = initState, action) => {
@@ -47,6 +49,10 @@ const reducer = (state = initState, action) => {
 			return { ...state, parentChildren: action.payload };
 		case 'FETCH_PROGRAM_VIDEOS':
 			return { ...state, programVideos: action.payload };
+		case 'FETCH_ANNOUNCEMENTS':
+			return { ...state, announcements: action.payload };
+		case 'FETCH_SUBMISSIONS':
+			return { ...state, submissions: action.payload };
 		default:
 			return state;
 	}

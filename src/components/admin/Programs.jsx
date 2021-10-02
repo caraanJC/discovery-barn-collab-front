@@ -310,7 +310,7 @@ const Programs = (props) => {
                                                                       new Date(
                                                                           Date.now()
                                                                       ),
-                                                                  _id: uuidv4(),
+                                                                  _id: null,
                                                               },
                                                           ]);
                                                     setTaskListName(datum.name);
@@ -467,6 +467,7 @@ const Programs = (props) => {
                                         icon: 'edit',
                                         tooltip: 'Edit Task',
                                         onClick: (event, rowData) => {
+                                            alert(rowData._id)
                                             handleTaskShowModal(rowData._id);
                                             LoadTaskData(rowData);
                                         },
