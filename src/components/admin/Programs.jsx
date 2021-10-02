@@ -9,21 +9,24 @@ import { getTimeToday, toNormalTime } from '../../Helper';
 
 const Programs = (props) => {
     const data = useSelector((state) => state.programs);
-    const dispatch = useDispatch();
     const [showModalFlag, setShowModalFlag] = useState(false);
-    const [shoTaskModalFlag, setShowTaskModalFlag] = useState(false);
-    const [taskList, setTaskList] = useState([]);
-    const [taskListProgramName, setTaskListProgramName] = useState('');
     const [appMessage, setAppMessage] = useState('');
     const [targetProgramId, setTargetProgramId] = useState('');
-    const [targetTaskId, setTargetTaskId] = useState('');
     const [programName, setProgramName] = useState('');
+    const [isActive, setIsActive] = useState('true');
+
+    // tasks variables
+    const [taskList, setTaskList] = useState([]);
+    const [taskListName, setTaskListName] = useState('');
     const [taskItem, setTaskItem] = useState({
         title: '',
         description: '',
         deadline: getTimeToday(),
     });
-    const [isActive, setIsActive] = useState('true');
+    const [showTaskModalFlag, setShowTaskModalFlag] = useState(false);
+    const [targetTaskId, setTargetTaskId] = useState('');
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         axios.get('http://localhost:8000/api/programs').then((res) => {
@@ -38,16 +41,6 @@ const Programs = (props) => {
         setAppMessage('');
     };
 
-    const clearTaskModal = () => {
-        setTaskItem({
-            title: '',
-            description: '',
-            deadline: getTimeToday(),
-        });
-        setShowTaskModalFlag(false);
-        setAppMessage('');
-    };
-
     const handleProgramDelete = (id) => {
         axios.delete(`http://localhost:8000/api/programs/${id}`).then((res) => {
             if (res.data.deletedCount === 1) {
@@ -58,85 +51,6 @@ const Programs = (props) => {
                 console.log('Unable to delete program.' + res.data);
             }
         });
-    };
-
-    const handleTaskDelete = (taskID) => {
-        axios
-            .put(`http://localhost:8000/api/programs/${taskID}/deleteTask`, {
-                name: taskListProgramName,
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    axios
-                        .get('http://localhost:8000/api/programs')
-                        .then((res) => {
-                            dispatch({
-                                type: 'FETCH_PROGRAMS',
-                                payload: res.data,
-                            });
-                            setTaskList(
-                                res.data.find(
-                                    (program) =>
-                                        program.name === taskListProgramName
-                                ).task_list
-                            );
-                        });
-                } else {
-                    console.log('Unable to delete program.' + res.data);
-                }
-            });
-    };
-
-    const handleProgramTableRefresh = () => {
-        axios.get('http://localhost:8000/api/programs').then((res) => {
-            dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
-        });
-    };
-
-    const handleTaskTableRefresh = () => {
-        axios.get('http://localhost:8000/api/programs').then((res) => {
-            dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
-            setTaskList(
-                res.data.find((program) => program.name === taskListProgramName)
-                    .task_list
-            );
-        });
-    };
-
-    const handleShowModal = (targetProgramId) => {
-        setShowModalFlag(true);
-        setTargetProgramId(targetProgramId);
-    };
-
-    const handleShowTaskModal = (id) => {
-        setShowTaskModalFlag(true);
-        setTargetTaskId(id);
-    };
-
-    const LoadProgramData = (data) => {
-        console.log(data);
-        setProgramName(data.name);
-        setIsActive(data.active_flag);
-        setAppMessage('');
-    };
-
-    const LoadTodoProgramData = (data) => {
-        // console.log(data);
-        setTaskItem({
-            title: data.title,
-            description: data.description,
-            deadline: toNormalTime(data.deadline),
-        });
-        setAppMessage('');
-    };
-
-    const handleModalHidden = () => {
-        setShowModalFlag(false);
-    };
-
-    const handleTodoModalHidden = () => {
-        setShowTaskModalFlag(false);
-        clearTaskModal();
     };
 
     const handleAddEditProgram = () => {
@@ -192,71 +106,36 @@ const Programs = (props) => {
         }
     };
 
-    const handleAddEditTask = () => {
-        if (!taskItem.title) return setAppMessage('Please provide task name');
-        if (!taskItem.description)
-            return setAppMessage('Please provide description name');
-        if (!taskItem.deadline) return setAppMessage('Please provide deadline');
-        let newTask = taskItem;
-        if (targetTaskId === 'ADD') {
-            axios
-                .post('http://localhost:8000/api/programs/addTask', {
-                    task: newTask,
-                    programName: taskListProgramName,
-                })
-                .then((res) => {
-                    if (res.data.success) {
-                        clearTaskModal();
-                        axios
-                            .get('http://localhost:8000/api/programs')
-                            .then(async (res) => {
-                                dispatch({
-                                    type: 'FETCH_PROGRAMS',
-                                    payload: res.data,
-                                });
+    const handleProgramTableRefresh = () => {
+        axios.get('http://localhost:8000/api/programs').then((res) => {
+            dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
+        });
+    };
 
-                                setTaskList(
-                                    res.data.find(
-                                        (program) =>
-                                            program.name === taskListProgramName
-                                    ).task_list
-                                );
-                            });
-                    } else {
-                        setAppMessage(res.data.message);
-                    }
-                });
-        } else {
-            axios
-                .put(
-                    `http://localhost:8000/api/programs/${targetTaskId}/editTask`,
-                    {
-                        task: newTask,
-                        programName: taskListProgramName,
-                    }
-                )
-                .then((res) => {
-                    if (res.data.success) {
-                        clearTaskModal();
-                        axios
-                            .get('http://localhost:8000/api/programs')
-                            .then((res) => {
-                                dispatch({
-                                    type: 'FETCH_PROGRAMS',
-                                    payload: res.data,
-                                });
-                                setTaskList(
-                                    res.data.find(
-                                        (program) =>
-                                            program.name === taskListProgramName
-                                    ).task_list
-                                );
-                            });
-                    } else {
-                        setAppMessage(res.data.message);
-                    }
-                });
-        }
+    const handleShowModal = (targetProgramId) => {
+        setShowModalFlag(true);
+        setTargetProgramId(targetProgramId);
+    };
+
+    const handleTaskShowModal = (targetTaskId) => {
+        setShowTaskModalFlag(true);
+        setTargetTaskId(targetTaskId);
+    };
+
+    const LoadProgramData = (data) => {
+        console.log(data);
+        setProgramName(data.name);
+        setIsActive(data.active_flag);
+        setAppMessage('');
+    };
+
+    const handleModalHidden = () => {
+        setShowModalFlag(false);
+    };
+
+    const handleTaskModalHidden = () => {
+        setShowTaskModalFlag(false);
+        clearTaskModal();
     };
 
     const handleOnInputChange = (e, fieldtype) => {
@@ -273,156 +152,286 @@ const Programs = (props) => {
         }
     };
 
+    const handleTaskDelete = (taskID) => {
+        axios
+            .put(`http://localhost:8000/api/programs/${taskID}/deleteTask`, {
+                name: taskListName,
+            })
+            .then((res) => {
+                if (res.data.success) {
+                    axios
+                        .get('http://localhost:8000/api/programs')
+                        .then((res) => {
+                            dispatch({
+                                type: 'FETCH_PROGRAMS',
+                                payload: res.data,
+                            });
+                            setTaskList(
+                                res.data.find(
+                                    (program) => program.name === taskListName
+                                ).task_list
+                            );
+                        });
+                } else {
+                    console.log('Unable to delete program.' + res.data);
+                }
+            });
+    };
+
+    const handleAddEditTask = () => {
+        if (!taskItem.title) return setAppMessage('Please provide task name');
+        if (!taskItem.description)
+            return setAppMessage('Please provide description name');
+        if (!taskItem.deadline) return setAppMessage('Please provide deadline');
+        let newTask = taskItem;
+        if (targetTaskId === 'ADD') {
+            axios
+                .post('http://localhost:8000/api/programs/addTask', {
+                    task: newTask,
+                    programName: taskListName,
+                })
+                .then((res) => {
+                    if (res.data.success) {
+                        clearTaskModal();
+                        axios
+                            .get('http://localhost:8000/api/programs')
+                            .then(async (res) => {
+                                dispatch({
+                                    type: 'FETCH_PROGRAMS',
+                                    payload: res.data,
+                                });
+
+                                setTaskList(
+                                    res.data.find(
+                                        (program) =>
+                                            program.name === taskListName
+                                    ).task_list
+                                );
+                            });
+                    } else {
+                        setAppMessage(res.data.message);
+                    }
+                });
+        } else {
+            axios
+                .put(
+                    `http://localhost:8000/api/programs/${targetTaskId}/editTask`,
+                    {
+                        task: newTask,
+                        programName: taskListName,
+                    }
+                )
+                .then((res) => {
+                    if (res.data.success) {
+                        clearTaskModal();
+                        axios
+                            .get('http://localhost:8000/api/programs')
+                            .then((res) => {
+                                dispatch({
+                                    type: 'FETCH_PROGRAMS',
+                                    payload: res.data,
+                                });
+                                setTaskList(
+                                    res.data.find(
+                                        (program) =>
+                                            program.name === taskListName
+                                    ).task_list
+                                );
+                            });
+                    } else {
+                        setAppMessage(res.data.message);
+                    }
+                });
+        }
+    };
+
+    const clearTaskModal = () => {
+        setTaskItem({
+            title: '',
+            description: '',
+            deadline: getTimeToday(),
+        });
+        setShowTaskModalFlag(false);
+        setAppMessage('');
+    };
+
+    const handleTaskTableRefresh = () => {
+        axios.get('http://localhost:8000/api/programs').then((res) => {
+            dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
+            setTaskList(
+                res.data.find((program) => program.name === taskListName)
+                    .task_list
+            );
+        });
+    };
+
+    const LoadTaskData = (data) => {
+        // console.log(data);
+        setTaskItem({
+            title: data.title,
+            description: data.description,
+            deadline: toNormalTime(data.deadline),
+        });
+        setAppMessage('');
+    };
+
     return (
         <>
             <div className='container-fluid  mt-4'>
                 <div className='table-responsive'>
-                    <MaterialTable
-                        title='Programs'
-                        data={data}
-                        columns={[
-                            {
-                                title: 'Program Name',
-                                field: 'name',
-                            },
-                            {
-                                title: 'Task List',
-                                field: 'task_list',
-                                render: (datum) => (
-                                    <button
-                                        onClick={() => {
-                                            datum?.task_list?.length > 0
-                                                ? setTaskList(datum.task_list)
-                                                : setTaskList([
-                                                      {
-                                                          title: 'Make a new entry',
-                                                          description:
-                                                              'do not edit',
-                                                          deadline: new Date(
-                                                              Date.now()
-                                                          ),
-                                                          _id: uuidv4(),
-                                                      },
-                                                  ]);
-                                            setTaskListProgramName(datum.name);
-                                        }}
-                                    >
-                                        View taskList
-                                    </button>
-                                ),
-                            },
-                            {
-                                title: 'Active',
-                                field: 'active_flag',
-                                render: (datum) =>
-                                    datum.active_flag ? 'Yes' : 'No',
-                            },
-                        ]}
-                        actions={[
-                            {
-                                icon: 'add',
-                                tooltip: 'Add Program',
-                                isFreeAction: true,
-                                onClick: (event) => handleShowModal('ADD'),
-                            },
-                            {
-                                icon: 'refresh',
-                                tooltip: 'Refresh Data',
-                                isFreeAction: true,
-                                onClick: () => handleProgramTableRefresh(),
-                            },
-                            {
-                                icon: 'edit',
-                                tooltip: 'Edit Program',
-                                onClick: (event, rowData) => {
-                                    handleShowModal(rowData._id);
-                                    LoadProgramData(rowData);
-                                },
-                            },
-                            {
-                                icon: 'delete',
-                                tooltip: 'Delete Program',
-                                onClick: (event, rowData) => {
-                                    let userId = rowData._id;
-                                    handleProgramDelete(userId);
-                                },
-                            },
-                        ]}
-                        options={{
-                            search: true,
-                            paging: true,
-                            filtering: true,
-                            exportButton: true,
-                            pageSize: 10,
-                            maxBodyHeight: '90vh',
-                        }}
-                    />
-                </div>
-            </div>
-
-            <Modal
-                show={showModalFlag}
-                onHide={() => handleModalHidden()}
-                keyboard={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        {targetProgramId === 'ADD'
-                            ? 'New Program'
-                            : 'Edit Program'}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p id='appmessage'>{appMessage}</p>
-                    <Form.Group className='mb-3'>
-                        <Form.Label>Program Name*</Form.Label>
-                        <Form.Control
-                            type='text'
-                            value={programName}
-                            onChange={(e) =>
-                                handleOnInputChange(e, 'programname')
-                            }
-                        />
-                    </Form.Group>
-                    <Form.Group className='mb-3'>
-                        <Form.Label>Active Flag*</Form.Label>
-                        <Form.Select
-                            value={isActive}
-                            onChange={(e) =>
-                                handleOnInputChange(e, 'activeflag')
-                            }
-                        >
-                            <option value='true'>True</option>
-                            <option value='false'>False</option>
-                        </Form.Select>
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer className='py-3'>
-                    <Button
-                        className='myButton'
-                        onClick={() => handleAddEditProgram()}
-                    >
-                        <i className='fa fa-save' /> Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            {/* taskList */}
-            <Modal
-                show={taskList?.length > 0}
-                onHide={() => setTaskList([])}
-                keyboard={false}
-                size='xl'
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>{taskListProgramName} Task List</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p id='appmessage'>{appMessage}</p>
-                    <div className='container-fluid mt-4 '>
-                        <div className='table-responsive'>
+                    {taskList.length === 0 ? (
+                        <>
                             <MaterialTable
-                                title={`${taskListProgramName} Task List`}
+                                title='Programs'
+                                data={data}
+                                columns={[
+                                    {
+                                        title: 'Program Name',
+                                        field: 'name',
+                                    },
+                                    {
+                                        title: 'Task List',
+                                        field: 'task_list',
+                                        render: (datum) => (
+                                            //
+                                            <Button
+                                                className='myButton'
+                                                onClick={() => {
+                                                    datum?.task_list?.length > 0
+                                                        ? setTaskList(
+                                                              datum.task_list
+                                                          )
+                                                        : setTaskList([
+                                                              {
+                                                                  title: 'Make a new entry',
+                                                                  description:
+                                                                      'do not edit',
+                                                                  deadline:
+                                                                      new Date(
+                                                                          Date.now()
+                                                                      ),
+                                                                  _id: uuidv4(),
+                                                              },
+                                                          ]);
+                                                    setTaskListName(datum.name);
+                                                }}
+                                            >
+                                                View Task List
+                                            </Button>
+                                        ),
+                                    },
+                                    {
+                                        title: 'Active',
+                                        field: 'active_flag',
+                                        render: (datum) =>
+                                            datum.active_flag ? 'Yes' : 'No',
+                                    },
+                                ]}
+                                actions={[
+                                    {
+                                        icon: 'add',
+                                        tooltip: 'Add Program',
+                                        isFreeAction: true,
+                                        onClick: (event) =>
+                                            handleShowModal('ADD'),
+                                    },
+                                    {
+                                        icon: 'refresh',
+                                        tooltip: 'Refresh Data',
+                                        isFreeAction: true,
+                                        onClick: () =>
+                                            handleProgramTableRefresh(),
+                                    },
+                                    {
+                                        icon: 'edit',
+                                        tooltip: 'Edit Program',
+                                        onClick: (event, rowData) => {
+                                            handleShowModal(rowData._id);
+                                            LoadProgramData(rowData);
+                                        },
+                                    },
+                                    {
+                                        icon: 'delete',
+                                        tooltip: 'Delete Program',
+                                        onClick: (event, rowData) => {
+                                            let userId = rowData._id;
+                                            handleProgramDelete(userId);
+                                        },
+                                    },
+                                ]}
+                                options={{
+                                    search: true,
+                                    paging: true,
+                                    filtering: true,
+                                    exportButton: true,
+                                    pageSize: 10,
+                                    maxBodyHeight: '90vh',
+                                }}
+                            />
+                            <Modal
+                                show={showModalFlag}
+                                onHide={() => handleModalHidden()}
+                                keyboard={false}
+                            >
+                                <Modal.Header closeButton>
+                                    <Modal.Title>
+                                        {targetProgramId === 'ADD'
+                                            ? 'New Program'
+                                            : 'Edit Program'}
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p id='appmessage'>{appMessage}</p>
+                                    <Form.Group className='mb-3'>
+                                        <Form.Label>Program Name*</Form.Label>
+                                        <Form.Control
+                                            type='text'
+                                            value={programName}
+                                            onChange={(e) =>
+                                                handleOnInputChange(
+                                                    e,
+                                                    'programname'
+                                                )
+                                            }
+                                        />
+                                    </Form.Group>
+                                    <Form.Group className='mb-3'>
+                                        <Form.Label>Active Flag*</Form.Label>
+                                        <Form.Select
+                                            value={isActive}
+                                            onChange={(e) =>
+                                                handleOnInputChange(
+                                                    e,
+                                                    'activeflag'
+                                                )
+                                            }
+                                        >
+                                            <option value='true'>True</option>
+                                            <option value='false'>False</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Modal.Body>
+                                <Modal.Footer className='py-3'>
+                                    <Button
+                                        className='myButton'
+                                        onClick={() => handleAddEditProgram()}
+                                    >
+                                        <i className='fa fa-save' /> Save
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                className='myButton'
+                                onClick={() => setTaskList([])}
+                            >
+                                <i className='fa fa-arrow-left' /> Go Back
+                            </Button>
+
+                            <MaterialTable
+                                title={`${taskListName} Task List`}
                                 data={taskList}
                                 columns={[
                                     {
@@ -446,7 +455,7 @@ const Programs = (props) => {
                                         tooltip: 'Add Task',
                                         isFreeAction: true,
                                         onClick: (event) =>
-                                            handleShowTaskModal('ADD'),
+                                            handleTaskShowModal('ADD'),
                                     },
                                     {
                                         icon: 'refresh',
@@ -458,8 +467,8 @@ const Programs = (props) => {
                                         icon: 'edit',
                                         tooltip: 'Edit Task',
                                         onClick: (event, rowData) => {
-                                            handleShowTaskModal(rowData._id);
-                                            LoadTodoProgramData(rowData);
+                                            handleTaskShowModal(rowData._id);
+                                            LoadTaskData(rowData);
                                         },
                                     },
                                     {
@@ -480,64 +489,75 @@ const Programs = (props) => {
                                     maxBodyHeight: '90vh',
                                 }}
                             />
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-            {/* edit Task List */}
-            <Modal
-                show={shoTaskModalFlag}
-                onHide={() => handleTodoModalHidden()}
-                keyboard={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        {targetTaskId === 'ADD' ? 'New Task' : 'Edit Task'}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p id='appmessage'>{appMessage}</p>
-                    <Form.Group className='mb-3'>
-                        <Form.Label>Title*</Form.Label>
-                        <Form.Control
-                            type='text'
-                            value={taskItem?.title}
-                            onChange={(e) =>
-                                handleOnInputChange(e, 'todoTitle')
-                            }
-                        />
-                    </Form.Group>
-                    <Form.Group className='mb-3'>
-                        <Form.Label>Task Description*</Form.Label>
-                        <Form.Control
-                            type='text'
-                            value={taskItem?.description}
-                            onChange={(e) =>
-                                handleOnInputChange(e, 'todoDescription')
-                            }
-                        />
-                    </Form.Group>
-                    <Form.Group className='mb-3'>
-                        <Form.Label>Task Deadline*</Form.Label>
-                        <Form.Control
-                            type='date'
-                            value={taskItem?.deadline}
-                            onChange={(e) =>
-                                handleOnInputChange(e, 'todoDeadline')
-                            }
-                        />
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer className='py-3'>
-                    <Button
-                        className='myButton'
-                        onClick={() => handleAddEditTask()}
-                    >
-                        <i className='fa fa-save' /> Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                            <Modal
+                                show={showTaskModalFlag}
+                                onHide={() => handleTaskModalHidden()}
+                                keyboard={false}
+                            >
+                                <Modal.Header closeButton>
+                                    <Modal.Title>
+                                        {targetTaskId === 'ADD'
+                                            ? 'New Task'
+                                            : 'Edit Task'}
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p id='appmessage'>{appMessage}</p>
+                                    <Form.Group className='mb-3'>
+                                        <Form.Label>Title*</Form.Label>
+                                        <Form.Control
+                                            type='text'
+                                            value={taskItem?.title}
+                                            onChange={(e) =>
+                                                handleOnInputChange(
+                                                    e,
+                                                    'todoTitle'
+                                                )
+                                            }
+                                        />
+                                    </Form.Group>
+                                    <Form.Group className='mb-3'>
+                                        <Form.Label>
+                                            Task Description*
+                                        </Form.Label>
+                                        <Form.Control
+                                            type='text'
+                                            value={taskItem?.description}
+                                            onChange={(e) =>
+                                                handleOnInputChange(
+                                                    e,
+                                                    'todoDescription'
+                                                )
+                                            }
+                                        />
+                                    </Form.Group>
+                                    <Form.Group className='mb-3'>
+                                        <Form.Label>Task Deadline*</Form.Label>
+                                        <Form.Control
+                                            type='date'
+                                            value={taskItem?.deadline}
+                                            onChange={(e) =>
+                                                handleOnInputChange(
+                                                    e,
+                                                    'todoDeadline'
+                                                )
+                                            }
+                                        />
+                                    </Form.Group>
+                                </Modal.Body>
+                                <Modal.Footer className='py-3'>
+                                    <Button
+                                        className='myButton'
+                                        onClick={() => handleAddEditTask()}
+                                    >
+                                        <i className='fa fa-save' /> Save
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                        </>
+                    )}
+                </div>
+            </div>
         </>
     );
 };
