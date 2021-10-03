@@ -427,7 +427,7 @@ const Programs = (props) => {
                                 className='myButton'
                                 onClick={() => setTaskList([])}
                             >
-                                <i className='fa fa-arrow-left' /> Go Back
+                                &#10229; Go Back
                             </Button>
 
                             <MaterialTable

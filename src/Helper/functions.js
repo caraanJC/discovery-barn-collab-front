@@ -10,6 +10,11 @@ export function formatDate(date) {
 	return [year, month, day ].join('-');
 }
 
+export function formatDateString(date) {
+    var d = new Date(date).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"});
+	return d;
+}
+
 export function renderActiveTags(flag){
     if(flag===true) {
         return <span class="badge bg-success">Active</span>;

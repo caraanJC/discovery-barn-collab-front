@@ -33,6 +33,8 @@ const Videos = (props) => {
 	const forUploadBtn = uploadState===false?'':'hidden';
 	const loadingBtn = uploadState===false?'hidden':'';
 	const [uploadProgress, setUploadProgress] = useState(0);
+
+	
 	useEffect(() => {
 		axios.get('http://localhost:8000/api/videos').then((res) => {	
 			let temp = res.data.map(data =>{
@@ -118,17 +120,17 @@ const Videos = (props) => {
 											setUploadState(false);
 											axios.put(`http://localhost:8000/api/videos/upload-file/${videoObjectId}/${uploadType}`,{path:url}).then((res) => {
 												let updatedVideos = data.map((video)=>{
-																		if(video._id===videoObjectId){
-																			if(uploadType==='IMG'){
-																				video.thumbnail_path=url;
-																			}
-																			else if(uploadType==='VID'){
-																				video.video_path=url;
-																			}
-																			
-																		}
-																		return video;
-																	});
+													if(video._id===videoObjectId){
+														if(uploadType==='IMG'){
+															video.thumbnail_path=url;
+														}
+														else if(uploadType==='VID'){
+															video.video_path=url;
+														}
+													}
+													video.lesson_date = formatDate(video.lesson_date);
+													return video;
+												});
 												dispatch({ type: 'FETCH_VIDEOS', payload: updatedVideos });
 												handleUploadModalHidden();
 												setUploadProgress(0);
@@ -383,7 +385,7 @@ const Videos = (props) => {
 							filtering: true,
 							exportButton: true,
 							pageSize: 10,
-							maxBodyHeight: '90vh',
+							maxBodyHeight: '80vh',
 						}}
 					/>
 				</div>

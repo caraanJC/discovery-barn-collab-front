@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import Videos from './Videos';
 import axios from 'axios';
 import WatchVideo from './WatchVideo';
+import Dashboard from './Dashboard';
 const Main = () => {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -86,8 +87,15 @@ const Main = () => {
                         <div className='sb-sidenav-menu'>
                             <div className='nav'>
                                 <div className='sb-sidenav-menu-heading'>
-                                    ONLINE RESOURCES
+                                    MENU
                                 </div>
+                                <Link to='/dashboard' className='nav-link'>
+                                    <div className='sb-nav-link-icon'>
+                                        <i className='fa fa-dashboard'></i>
+                                    </div>
+                                    Dashboard
+                                </Link>
+                               
                                 <Link to='/videos' className='nav-link'>
                                     <div className='sb-nav-link-icon'>
                                         <i className='fa fa-film'></i>
@@ -114,6 +122,11 @@ const Main = () => {
                                 exact
                                 path='/videos/:id'
                                 render={() => <WatchVideo />}
+                            />
+                            <Route
+                                exact
+                                path='/dashboard'
+                                render={() => <Dashboard />}
                             />
                         </Switch>
                     </main>

@@ -3,26 +3,29 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 const Videos = (props) => {
-    const videos = useSelector((state) => state.videos);
     const parentChildren = useSelector((state) => state.parentChildren);
     const programVideos = useSelector((state) => state.programVideos);
     const dispatch = useDispatch();
-    const [programId, setProgramId] = useState('');
     const [program, setProgram] = useState('');
+    const childSelected = useSelector((state) => state.childSelected);
+    const childProgramSelected = useSelector((state) => state.childProgramSelected);
 
     const handleOnChange = (e) => {
-        setProgramId(e.target.value);
+        let child = e.target.value;
+        let childprogram = e.target.childNodes[e.target.selectedIndex].getAttribute('data-program-id');
+        dispatch({type:"SET_CHILD_PROGRAM_SELECTED",payload:childprogram});
+        dispatch({type:"SET_CHILD_SELECTED",payload:child});
     };
 
     useEffect(() => {
-        if (programId !== '') {
+        if (childProgramSelected !== '') {
             axios
-                .get(`http://localhost:8000/api/programs/${programId}`)
+                .get(`http://localhost:8000/api/programs/${childProgramSelected}`)
                 .then((res) => {
                     setProgram(res.data.name);
                 });
             axios
-                .get(`http://localhost:8000/api/videos/${programId}`)
+                .get(`http://localhost:8000/api/videos/${childProgramSelected}`)
                 .then((res) => {
                     dispatch({
                         type: 'FETCH_PROGRAM_VIDEOS',
@@ -35,9 +38,8 @@ const Videos = (props) => {
                 payload: [],
             });
             setProgram('');
-            setProgramId('');
         }
-    }, [programId]);
+    }, [childProgramSelected]);
 
     return (
         <div className='container-fluid mt-4'>
@@ -49,13 +51,15 @@ const Videos = (props) => {
                         aria-label='.form-select-md'
                         id='childselection'
                         onChange={(e) => handleOnChange(e)}
+                        value={childSelected}
                     >
-                        <option value=''>Select A Student</option>
+                        <option value='' data-program-id=''>Select A Student</option>
                         {parentChildren.map((child) => {
                             return (
                                 <option
                                     key={child._id}
-                                    value={child.program_id}
+                                    value={child._id}
+                                    data-program-id={child.program_id}
                                 >
                                     {child.first_name} {child.last_name}
                                 </option>
@@ -63,12 +67,12 @@ const Videos = (props) => {
                         })}
                     </select>
                 </div>
-
+                <hr/>
                 <div className='row' id='programvideocontent'>
-                    <h3 className='mt-3 mb-2' id='programtitle'>
+                    <h3 className='mt-1 mb-3' id='programtitle'>
                         {program}
                     </h3>
-                    {programVideos.length===0&&program!==''&&<i><h5>No Videos Available</h5></i>}
+                    {programVideos.length===0&&childSelected!==''&&<i><h5>No Videos Available</h5></i>}
                     {programVideos.map((video) => {
                         let lessondate = new Date(video.lesson_date);
                         let dateformat = {

@@ -13,6 +13,8 @@ const initState = {
 	programVideos: [],
 	announcements: [],
 	submissions: [],
+	childSelected:'',
+	childProgramSelected:''
 };
 
 const reducer = (state = initState, action) => {
@@ -53,6 +55,10 @@ const reducer = (state = initState, action) => {
 			return { ...state, announcements: action.payload };
 		case 'FETCH_SUBMISSIONS':
 			return { ...state, submissions: action.payload };
+		case 'SET_CHILD_SELECTED':
+			return { ...state, childSelected: action.payload };
+		case 'SET_CHILD_PROGRAM_SELECTED':
+			return { ...state, childProgramSelected: action.payload };
 		default:
 			return state;
 	}
