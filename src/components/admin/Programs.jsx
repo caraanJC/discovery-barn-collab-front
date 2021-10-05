@@ -112,7 +112,6 @@ const Programs = (props) => {
 	};
 
 	const LoadProgramData = (data) => {
-		console.log(data);
 		setProgramName(data.name);
 		setIsActive(data.active_flag);
 		setAppMessage('');
@@ -228,7 +227,6 @@ const Programs = (props) => {
 	};
 
 	const LoadTaskData = (data) => {
-		// console.log(data);
 		setTaskItem({
 			title: data.title,
 			description: data.description,
@@ -236,6 +234,8 @@ const Programs = (props) => {
 		});
 		setAppMessage('');
 	};
+
+
 
 	return (
 		<>
@@ -350,6 +350,7 @@ const Programs = (props) => {
 							<Button className='myButton' onClick={() => setTaskList([])}>
 								&#10229; Go Back
 							</Button>
+											
 
 							<MaterialTable
 								title={`${taskListName} Task List`}
@@ -386,7 +387,6 @@ const Programs = (props) => {
 										icon: 'edit',
 										tooltip: 'Edit Task',
 										onClick: (event, rowData) => {
-											alert(rowData._id);
 											handleTaskShowModal(rowData._id);
 											LoadTaskData(rowData);
 										}

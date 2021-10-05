@@ -6,6 +6,7 @@ import Videos from './Videos';
 import axios from 'axios';
 import WatchVideo from './WatchVideo';
 import Dashboard from './Dashboard';
+import Tasks from './Tasks';
 import TaskItem from './TaskItem';
 const Main = (props) => {
 	const dispatch = useDispatch();
@@ -79,6 +80,13 @@ const Main = (props) => {
 									</div>
 									Videos
 								</Link>
+
+								<Link to='/tasks' className='nav-link'>
+									<div className='sb-nav-link-icon'>
+										<i className='fa fa-list'></i>
+									</div>
+									Tasks
+								</Link>
 							</div>
 						</div>
 						<div className='sb-sidenav-footer'>
@@ -94,6 +102,7 @@ const Main = (props) => {
 							<Route path='/videos/:id' render={(props) => <WatchVideo {...props} />} />
 							<Route path='/videos' render={(props) => <Videos />} />
 							<Route path='/dashboard' render={(props) => <Dashboard />} />
+							<Route path='/tasks' render={(props) => <Tasks />} />
 							<Redirect to='/dashboard' />
 						</Switch>
 					</main>
