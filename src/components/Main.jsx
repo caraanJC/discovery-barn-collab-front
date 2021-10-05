@@ -5,7 +5,11 @@ import React, { useEffect } from 'react';
 import Videos from './Videos';
 import axios from 'axios';
 import WatchVideo from './WatchVideo';
+<<<<<<< HEAD
 import Tasks from './Tasks';
+=======
+import Dashboard from './Dashboard';
+>>>>>>> c73f82aaf67822b85efb524ddaef44dd1c15cfdb
 const Main = () => {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -87,8 +91,15 @@ const Main = () => {
                         <div className='sb-sidenav-menu'>
                             <div className='nav'>
                                 <div className='sb-sidenav-menu-heading'>
-                                    ONLINE RESOURCES
+                                    MENU
                                 </div>
+                                <Link to='/dashboard' className='nav-link'>
+                                    <div className='sb-nav-link-icon'>
+                                        <i className='fa fa-dashboard'></i>
+                                    </div>
+                                    Dashboard
+                                </Link>
+                               
                                 <Link to='/videos' className='nav-link'>
                                     <div className='sb-nav-link-icon'>
                                         <i className='fa fa-film'></i>
@@ -124,8 +135,13 @@ const Main = () => {
                             />
                             <Route
                                 exact
+<<<<<<< HEAD
                                 path='/tasks'
                                 render={() => <Tasks />}
+=======
+                                path='/dashboard'
+                                render={() => <Dashboard />}
+>>>>>>> c73f82aaf67822b85efb524ddaef44dd1c15cfdb
                             />
                         </Switch>
                     </main>

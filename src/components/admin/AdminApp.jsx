@@ -5,6 +5,8 @@ import Programs from './Programs';
 import Parents from './Parents';
 import Students from './Students';
 import Videos from './Videos';
+import Announcements from './Announcements';
+import Submissions from './Submissions';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 const AdminApp = () => {
@@ -118,6 +120,18 @@ const AdminApp = () => {
                                     </div>
                                     Videos
                                 </Link>
+                                <Link to='/admin/announcements' className='nav-link'>
+                                    <div className='sb-nav-link-icon'>
+                                        <i className='fa fa-film'></i>
+                                    </div>
+                                    Announcements
+                                </Link>
+                                <Link to='/admin/submissions' className='nav-link'>
+                                    <div className='sb-nav-link-icon'>
+                                        <i className='fa fa-film'></i>
+                                    </div>
+                                    Submissions
+                                </Link>
                             </div>
                         </div>
                         <div className='sb-sidenav-footer'>
@@ -159,6 +173,19 @@ const AdminApp = () => {
                                 path='/admin/videos'
                                 render={() => <Videos />}
                             />
+<<<<<<< HEAD
+=======
+                            <Route
+                                exact
+                                path='/admin/announcements'
+                                render={() => <Announcements />}
+                            />
+                            <Route
+                                exact
+                                path='/admin/submissions'
+                                render={() => <Submissions />}
+                            />
+>>>>>>> c73f82aaf67822b85efb524ddaef44dd1c15cfdb
                             
                         </Switch>
                     </main>
