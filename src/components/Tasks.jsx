@@ -2,14 +2,14 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { toNormalTime } from '../Helper';
+import { toNormalTime } from '../helper';
 
 import { Form } from 'react-bootstrap';
 
 import { Button, Card, Modal } from 'react-bootstrap';
 
-import { storage } from './admin/firebase';
-// import { storage } from './base';
+// import { storage } from './admin/firebase';
+import { storage } from './base';
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage';
 
 const Tasks = () => {
