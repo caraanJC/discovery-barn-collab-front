@@ -5,12 +5,12 @@ import React, { useEffect } from 'react';
 import Videos from './Videos';
 import axios from 'axios';
 import WatchVideo from './WatchVideo';
+import Tasks from './Tasks';
 const Main = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const parentUserSignedIn = useSelector((state) => state.parentUserSignedIn);
     const parentToken = useSelector((state) => state.parentToken);
-    const parentChildren = useSelector((state) => state.parentChildren);
 
     useEffect(() => {
         axios
@@ -46,32 +46,33 @@ const Main = () => {
                 >
                     <i className='fa fa-bars'></i>
                 </button>
-                <div class='d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0'></div>
+                <div className='d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0'></div>
 
                 <ul className='navbar-nav ml-auto ml-md-0'>
                     <li className='nav-item dropdown'>
-                        <a
-                            class='nav-link dropdown-toggle'
+                        <Link
+                            className='nav-link dropdown-toggle'
                             type='button'
                             id='dropdownMenuButton1'
                             data-bs-toggle='dropdown'
                             aria-expanded='false'
+                            to='#'
                         >
                             <i className='fa fa-user fa-fw'></i>
-                        </a>
+                        </Link>
                         <ul
-                            class='dropdown-menu'
+                            className='dropdown-menu'
                             aria-labelledby='dropdownMenuButton1'
                         >
                             <li>
-                                <a class='dropdown-item' href='#'>
+                                <Link className='dropdown-item' to='#'>
                                     Change Password
-                                </a>
+                                </Link>
                             </li>
                             <li onClick={() => handleLogout()}>
-                                <a class='dropdown-item' href='#'>
+                                <Link className='dropdown-item' to='#'>
                                     Logout
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </li>
@@ -94,6 +95,12 @@ const Main = () => {
                                     </div>
                                     Videos
                                 </Link>
+                                <Link to='/tasks' className='nav-link'>
+                                    <div className='sb-nav-link-icon'>
+                                        <i className='fa fa-check-square-o'></i>
+                                    </div>
+                                    Tasks
+                                </Link>
                             </div>
                         </div>
                         <div className='sb-sidenav-footer'>
@@ -114,6 +121,11 @@ const Main = () => {
                                 exact
                                 path='/videos/:id'
                                 render={() => <WatchVideo />}
+                            />
+                            <Route
+                                exact
+                                path='/tasks'
+                                render={() => <Tasks />}
                             />
                         </Switch>
                     </main>

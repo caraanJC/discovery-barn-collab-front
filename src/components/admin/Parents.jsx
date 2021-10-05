@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Modal, Form, Button } from 'react-bootstrap';
+import { formatDate, renderActiveTags } from '../../Helper/functions';
 const Parents = (props) => {
     const data = useSelector((state) => state.parents);
     const dispatch = useDispatch();
@@ -158,6 +159,9 @@ const Parents = (props) => {
                             {
                                 title: 'Active Flag',
                                 field: 'active_flag',
+                                align: 'center',
+                                render: (rowData) =>
+                                    renderActiveTags(rowData.active_flag),
                             },
                         ]}
                         actions={[

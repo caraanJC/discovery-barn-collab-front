@@ -159,6 +159,7 @@ const AdminApp = () => {
                                 path='/admin/videos'
                                 render={() => <Videos />}
                             />
+                            
                         </Switch>
                     </main>
                     <footer className='py-4 bg-light mt-auto'>

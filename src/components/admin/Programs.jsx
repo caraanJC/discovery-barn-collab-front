@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getTimeToday, toNormalTime } from '../../Helper';
+import { getTimeToday, toNormalTime } from '../../Helper/index';
 
 const Programs = (props) => {
     const data = useSelector((state) => state.programs);
@@ -22,6 +22,7 @@ const Programs = (props) => {
         title: '',
         description: '',
         deadline: getTimeToday(),
+        file_type: '',
     });
     const [showTaskModalFlag, setShowTaskModalFlag] = useState(false);
     const [targetTaskId, setTargetTaskId] = useState('');
@@ -149,6 +150,8 @@ const Programs = (props) => {
             setTaskItem({ ...taskItem, description: e.target.value });
         } else if (fieldtype === 'todoDeadline') {
             setTaskItem({ ...taskItem, deadline: e.target.value });
+        } else if (fieldtype === 'todoFileType') {
+            setTaskItem({ ...taskItem, file_type: e.target.value });
         }
     };
 
@@ -183,6 +186,8 @@ const Programs = (props) => {
         if (!taskItem.description)
             return setAppMessage('Please provide description name');
         if (!taskItem.deadline) return setAppMessage('Please provide deadline');
+        if (!taskItem.file_type)
+            return setAppMessage('Please provide file type');
         let newTask = taskItem;
         if (targetTaskId === 'ADD') {
             axios
@@ -271,6 +276,7 @@ const Programs = (props) => {
             title: data.title,
             description: data.description,
             deadline: toNormalTime(data.deadline),
+            file_type: data.file_type,
         });
         setAppMessage('');
     };
@@ -303,7 +309,7 @@ const Programs = (props) => {
                                                           )
                                                         : setTaskList([
                                                               {
-                                                                  title: 'Make a new entry',
+                                                                  title: 'n/a',
                                                                   description:
                                                                       'do not edit',
                                                                   deadline:
@@ -432,7 +438,9 @@ const Programs = (props) => {
 
                             <MaterialTable
                                 title={`${taskListName} Task List`}
-                                data={taskList}
+                                data={taskList.filter(
+                                    (task) => task.title !== 'n/a'
+                                )}
                                 columns={[
                                     {
                                         title: 'Title',
@@ -443,10 +451,14 @@ const Programs = (props) => {
                                         field: 'description',
                                     },
                                     {
-                                        title: 'Deadline',
+                                        title: 'Deadline (YYYY-MM-DD)',
                                         field: 'deadline',
                                         render: (tasks) =>
                                             toNormalTime(tasks.deadline),
+                                    },
+                                    {
+                                        title: 'File Type',
+                                        field: 'file_type',
                                     },
                                 ]}
                                 actions={[
@@ -503,6 +515,7 @@ const Programs = (props) => {
                                 </Modal.Header>
                                 <Modal.Body>
                                     <p id='appmessage'>{appMessage}</p>
+
                                     <Form.Group className='mb-3'>
                                         <Form.Label>Title*</Form.Label>
                                         <Form.Control
@@ -543,6 +556,24 @@ const Programs = (props) => {
                                                 )
                                             }
                                         />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Label>File Type</Form.Label>
+                                        <Form.Select
+                                            aria-label='Selected File Type'
+                                            value={taskItem?.file_type}
+                                            onChange={(e) =>
+                                                handleOnInputChange(
+                                                    e,
+                                                    'todoFileType'
+                                                )
+                                            }
+                                        >
+                                            <option>Select File Type</option>
+                                            <option value='video'>video</option>
+                                            <option value='image'>image</option>
+                                            <option value='sound'>sound</option>
+                                        </Form.Select>
                                     </Form.Group>
                                 </Modal.Body>
                                 <Modal.Footer className='py-3'>
