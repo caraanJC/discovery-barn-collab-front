@@ -8,8 +8,8 @@ import { Form } from 'react-bootstrap';
 
 import { Button, Card, Modal } from 'react-bootstrap';
 
-// import { storage } from './admin/firebase';
-import { storage } from './base';
+import { storage } from './admin/firebase';
+// import { storage } from './base';
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage';
 
 const Tasks = () => {
