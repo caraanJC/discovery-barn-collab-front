@@ -235,8 +235,6 @@ const Programs = (props) => {
 		setAppMessage('');
 	};
 
-
-
 	return (
 		<>
 			<div className='container-fluid  mt-4'>
@@ -350,7 +348,6 @@ const Programs = (props) => {
 							<Button className='myButton' onClick={() => setTaskList([])}>
 								&#10229; Go Back
 							</Button>
-											
 
 							<MaterialTable
 								title={`${taskListName} Task List`}
@@ -421,7 +418,7 @@ const Programs = (props) => {
 									</Form.Group>
 									<Form.Group className='mb-3'>
 										<Form.Label>Task Description*</Form.Label>
-										<Form.Control type='text' value={taskItem?.description} onChange={(e) => handleOnInputChange(e, 'todoDescription')} />
+										<Form.Control as='textarea' rows={10} value={taskItem?.description} onChange={(e) => handleOnInputChange(e, 'todoDescription')}></Form.Control>
 									</Form.Group>
 									<Form.Group className='mb-3'>
 										<Form.Label>Task Deadline*</Form.Label>

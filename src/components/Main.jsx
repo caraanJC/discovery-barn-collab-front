@@ -98,7 +98,7 @@ const Main = (props) => {
 				<div id='layoutSidenav_content'>
 					<main>
 						<Switch>
-							<Route path='/view-task/:taskTitle' render={() => <TaskItem />} />
+							<Route path='/view-task/:taskTitle' render={(props) => <TaskItem {...props} />} />
 							<Route path='/videos/:id' render={() => <WatchVideo />} />
 							<Route path='/videos' render={() => <Videos />} />
 							<Route path='/dashboard' render={() => <Dashboard />} />
