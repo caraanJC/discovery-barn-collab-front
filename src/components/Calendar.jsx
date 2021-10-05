@@ -32,8 +32,8 @@ const Calendar = (props) => {
 		}
 	}, [childProgram]);
 
-	const handleOnEventClicked = (taskId) => {
-		history.push(`/task/${taskId}`);
+	const handleOnEventClicked = (taskName) => {
+		history.push(`/view-task/${taskName}`);
 	};
 
 	return (
@@ -46,7 +46,7 @@ const Calendar = (props) => {
 					end: 'prev,next'
 				}}
 				events={events}
-				eventClick={(e) => handleOnEventClicked(e.event.id)}
+				eventClick={(e) => handleOnEventClicked(e.event.title)}
 				dateClick={(e) => console.log(e.dateStr)}
 				initialView='dayGridMonth'
 			/>

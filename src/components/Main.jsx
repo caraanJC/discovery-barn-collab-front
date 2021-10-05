@@ -39,21 +39,21 @@ const Main = (props) => {
 				<button className='btn btn-link btn-sm order-1 order-lg-0' id='sidebarToggle' href='#' onClick={() => onToggleSideNav()}>
 					<i className='fa fa-bars'></i>
 				</button>
-				<div class='d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0'></div>
+				<div className='d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0'></div>
 
 				<ul className='navbar-nav ml-auto ml-md-0'>
 					<li className='nav-item dropdown'>
-						<a class='nav-link dropdown-toggle' type='button' id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'>
+						<a className='nav-link dropdown-toggle' type='button' id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'>
 							<i className='fa fa-user fa-fw'></i>
 						</a>
-						<ul class='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
+						<ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
 							<li>
-								<a class='dropdown-item' href='#'>
+								<a className='dropdown-item' href='#'>
 									Change Password
 								</a>
 							</li>
 							<li onClick={() => handleLogout()}>
-								<a class='dropdown-item' href='#'>
+								<a className='dropdown-item' href='#'>
 									Logout
 								</a>
 							</li>
@@ -98,11 +98,11 @@ const Main = (props) => {
 				<div id='layoutSidenav_content'>
 					<main>
 						<Switch>
-							<Route path='/task/:id' render={(props) => <TaskItem {...props} />} />
-							<Route path='/videos/:id' render={(props) => <WatchVideo {...props} />} />
-							<Route path='/videos' render={(props) => <Videos />} />
-							<Route path='/dashboard' render={(props) => <Dashboard />} />
-							<Route path='/tasks' render={(props) => <Tasks />} />
+							<Route path='/view-task/:taskTitle' render={() => <TaskItem />} />
+							<Route path='/videos/:id' render={() => <WatchVideo />} />
+							<Route path='/videos' render={() => <Videos />} />
+							<Route path='/dashboard' render={() => <Dashboard />} />
+							<Route path='/tasks' component={Tasks} />
 							<Redirect to='/dashboard' />
 						</Switch>
 					</main>
@@ -119,4 +119,3 @@ const Main = (props) => {
 	);
 };
 export default Main;
-/**/

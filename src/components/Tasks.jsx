@@ -4,42 +4,27 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { toNormalTime } from '../helper';
 import { useHistory } from 'react-router';
+import { Button, Card } from 'react-bootstrap';
 
-import { Form } from 'react-bootstrap';
-
-import { Button, Card, Modal } from 'react-bootstrap';
-
-//import { storage } from './admin/firebase';
-//import { storage } from './base';
-import firebaseApp from './admin/firebase';
-import { getDownloadURL, ref, uploadBytes, getStorage as storage } from '@firebase/storage';
-
-const Tasks = () => {
-	const parentToken = useSelector((state) => state.parentToken);
+const Tasks = (props) => {
 	const students = useSelector((state) => state.parentChildren);
-
-	const [showModal, setShowModal] = useState(false);
-
-	const [selectedTask, setSelectedTask] = useState({});
-	const [appMessage, setAppMessage] = useState('');
-	const [fileToSubmit, setFileToSubmit] = useState('');
-	const [backendFile, setBackendFile] = useState();
-
 	const childSelected = useSelector((state) => state.childSelected);
 	const childProgramSelected = useSelector((state) => state.childProgramSelected);
 	const programTasks = useSelector((state) => state.programTasks);
-
 	const dispatch = useDispatch();
 	const history = useHistory();
 
 	useEffect(() => {
-		if (childSelected != '') {
-			axios.get(`http://localhost:8000/api/programs/${childProgramSelected}/getTasks`).then((res) => {
-				dispatch({ type: 'SET_PROGRAM_TASKS', payload: res.data });
-			});
-		} else {
-			dispatch({ type: 'SET_PROGRAM_TASKS', payload: [] });
+		async function fetchData() {
+			if (childSelected !== '') {
+				await axios.get(`http://localhost:8000/api/programs/${childProgramSelected}/getTasks`).then((res) => {
+					dispatch({ type: 'SET_PROGRAM_TASKS', payload: res.data });
+				});
+			} else {
+				dispatch({ type: 'SET_PROGRAM_TASKS', payload: [] });
+			}
 		}
+		fetchData();
 	}, [childSelected]);
 
 	const handleOnChange = (e) => {
@@ -49,125 +34,9 @@ const Tasks = () => {
 		dispatch({ type: 'SET_CHILD_SELECTED', payload: child });
 	};
 
-	/*const handleOpenModal = (task) => {
-		setShowModal(true);
-		setSelectedTask({
-			...task,
-			file_type_string: file_type_strings[task.file_type]
-		});
+	const handleOnViewTask = (taskTitle) => {
+		history.push(`/view-task/${taskTitle}`);
 	};
-
-	const handleCloseModal = () => {
-		setShowModal(false);
-		setFileToSubmit('');
-		setAppMessage('');
-	};
-
-	const handleSetFile = (e) => {
-		setFileToSubmit(e.target.files[0]);
-	};
-
-	const getImageURL = (filename, taskID) => {
-		getDownloadURL(ref(storage, filename))
-			.then((url) => {
-				setBackendFile({ taskID, url });
-			})
-			.catch((error) => {
-				// Handle any errors
-				console.log(error);
-			});
-	};
-
-	const getTasks = async (student) => {
-		let tasks;
-		await axios.get(`http://localhost:8000/api/programs/${childProgramSelected}/getTasks`).then((res) => {
-			tasks = res.data;
-		});
-		return tasks;
-	};
-
-	const fileExists = async (taskID) => {
-		let result;
-
-		await axios.post(`http://localhost:8000/api/students/${childSelected}/submissions/file-exist`, { task_id: taskID }).then((res) => (result = res.data));
-		return result;
-	};
-
-	const handleSubmit = async (task) => {
-		if (!fileToSubmit.name) return setAppMessage('Please provide the file');
-
-		const existing = await fileExists(task._id);
-
-		if (!existing) {
-			//  submit file to firebase
-
-			const location = `${childSelected.first_name}${childSelected.last_name.replace(/ /g, '')}/${task.title.replace(/ /g, '')}/${fileToSubmit.name}`;
-
-			const imagesRef = ref(storage, location);
-			await uploadBytes(imagesRef, fileToSubmit).then((snapshot) => {
-				console.log('Uploaded a file');
-			});
-
-			getImageURL(`${location}`, task._id);
-		} else {
-			setAppMessage('Already Submitted');
-		}
-	};
-
-	const getStatus = async (student) => {
-		let tasks = student.task_list.map((task) => {
-			const foundSubmission = student?.submissions.find((submission) => submission.task_id === task._id) ? student?.submissions.find((submission) => submission.task_id === task._id) : {};
-
-			if (Object.keys(foundSubmission).length !== 0) {
-				if (foundSubmission.date_submitted) {
-					if (toNormalTime(foundSubmission.date_submitted) > toNormalTime(task.deadline)) {
-						task.status = 'Late';
-					} else {
-						task.status = 'Submitted';
-					}
-				}
-			} else {
-				task.status = 'Not Submitted';
-			}
-			return task;
-		});
-
-		return tasks;
-	};
-
-	const getAllStudents = async () => {
-		await axios.get(`http://localhost:8000/api/parents/get-students/${parentToken}`).then(async (res) => {
-			res.data.map(async (student) => {
-				student.task_list = await getTasks(student);
-				student.task_list = await getStatus(student);
-
-				dispatch({
-					type: 'FETCH_STUDENT',
-					payload: student
-				});
-				return student;
-			});
-		});
-	};
-
-	useEffect(() => {
-		(async () => await getAllStudents())();
-		//eslint-disable-next-line
-	}, []);
-
-	useEffect(() => {
-		if (backendFile) {
-			const init = async () => {
-				await axios.post(`http://localhost:8000/api/students/${childSelected._id}/submissions/upload`, {
-					link: backendFile.url,
-					task_id: backendFile.taskID
-				});
-				handleCloseModal();
-			};
-			init();
-		}
-		// eslint-disable-next-line
-	}, [backendFile]);*/
 
 	return (
 		<>
@@ -206,7 +75,7 @@ const Tasks = () => {
 									<Card.Body className='d-flex flex-wrap flex-row align-items-center justify-content-center'>
 										<Card.Title className='task-title'>{task.title}</Card.Title>
 										<p className='task-date'>Due Date: {task.deadline && toNormalTime(task.deadline)}</p>
-										<Button className='myButton btn-success' onClick={console.log('sdfsd')}>
+										<Button className='myButton btn-success' onClick={() => handleOnViewTask(task.title)}>
 											View Task
 										</Button>
 									</Card.Body>
@@ -221,5 +90,4 @@ const Tasks = () => {
 		</>
 	);
 };
-
 export default Tasks;

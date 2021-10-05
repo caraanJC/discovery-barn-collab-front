@@ -41,7 +41,7 @@ const Announcements = () => {
 	return (
 		<>
 			<div className='announcement-section'>
-				<div class='announcement-section-title'>Announcements</div>
+				<div className='announcement-section-title'>Announcements</div>
 
 				<ul className='announcement-section-item'>
 					{announcements.length < 1 && (

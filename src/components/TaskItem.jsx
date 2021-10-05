@@ -1,8 +1,16 @@
+import { useParams } from 'react-router-dom';
 const TaskItem = (props) => {
+	const { taskTitle } = useParams();
 	return (
 		<>
-			<h2>Task Item</h2>
-			{console.log(props.params)}
+			<div className='container-fluid mt-4'>
+				<div className='table-responsive'>
+					<div className='d-flex align-items-bottom justify-content-between'>
+						<h2>{taskTitle}</h2>
+					</div>
+					<hr />
+				</div>
+			</div>
 		</>
 	);
 };

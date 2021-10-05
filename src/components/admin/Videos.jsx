@@ -452,7 +452,7 @@ const Videos = (props) => {
 				<Modal.Footer className='py-3'>
 					<Button className='myButton' disabled={uploadState} onClick={() => handleOnFileUpload()}>
 						<span className={loadingBtn}>
-							<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Uploading...
+							<span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Uploading...
 						</span>
 						<span className={forUploadBtn}>
 							<i className='fa fa-upload' /> Upload
