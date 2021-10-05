@@ -120,13 +120,19 @@ const AdminApp = () => {
                                     </div>
                                     Videos
                                 </Link>
-                                <Link to='/admin/announcements' className='nav-link'>
+                                <Link
+                                    to='/admin/announcements'
+                                    className='nav-link'
+                                >
                                     <div className='sb-nav-link-icon'>
                                         <i className='fa fa-film'></i>
                                     </div>
                                     Announcements
                                 </Link>
-                                <Link to='/admin/submissions' className='nav-link'>
+                                <Link
+                                    to='/admin/submissions'
+                                    className='nav-link'
+                                >
                                     <div className='sb-nav-link-icon'>
                                         <i className='fa fa-film'></i>
                                     </div>
@@ -173,8 +179,6 @@ const AdminApp = () => {
                                 path='/admin/videos'
                                 render={() => <Videos />}
                             />
-<<<<<<< HEAD
-=======
                             <Route
                                 exact
                                 path='/admin/announcements'
@@ -185,8 +189,6 @@ const AdminApp = () => {
                                 path='/admin/submissions'
                                 render={() => <Submissions />}
                             />
->>>>>>> c73f82aaf67822b85efb524ddaef44dd1c15cfdb
-                            
                         </Switch>
                     </main>
                     <footer className='py-4 bg-light mt-auto'>

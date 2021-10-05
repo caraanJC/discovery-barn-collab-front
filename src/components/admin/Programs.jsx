@@ -3,13 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { v4 as uuidv4 } from 'uuid';
 
-<<<<<<< HEAD
-import { getTimeToday, toNormalTime } from '../../Helper/index';
-=======
-import { getTimeToday, toNormalTime } from '../../helper';
->>>>>>> c73f82aaf67822b85efb524ddaef44dd1c15cfdb
+import { getTimeToday, toNormalTime } from '../../helper/index';
 
 const Programs = (props) => {
     const data = useSelector((state) => state.programs);
@@ -483,7 +478,7 @@ const Programs = (props) => {
                                         icon: 'edit',
                                         tooltip: 'Edit Task',
                                         onClick: (event, rowData) => {
-                                            alert(rowData._id)
+                                            alert(rowData._id);
                                             handleTaskShowModal(rowData._id);
                                             LoadTaskData(rowData);
                                         },
