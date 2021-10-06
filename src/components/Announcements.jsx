@@ -1,31 +1,26 @@
-import React,{useState,useEffect} from "react";
-import {useSelector,useDispatch} from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Modal, Form, Button } from 'react-bootstrap';
-import axios from "axios";
-import {formatDateString} from "../helper/functions";
+import axios from 'axios';
+import { formatDateString } from '../helper/functions';
 const Announcements = () => {
-    
     const announcements = useSelector((state) => state.announcements);
     const dispatch = useDispatch();
-    const [title,setTitle] = useState('');
-    const [subtitle,setSubtitle] = useState('');
-    const [details,setDetails] = useState('');
-    const [aDate,setADate] = useState('');
-    const [showModalFlag,setShowModalFlag] = useState(false);
+    const [title, setTitle] = useState('');
+    const [subtitle, setSubtitle] = useState('');
+    const [details, setDetails] = useState('');
+    const [aDate, setADate] = useState('');
+    const [showModalFlag, setShowModalFlag] = useState(false);
 
     useEffect(() => {
-        
-        axios
-            .get(`http://localhost:8000/api/announcements/`)
-            .then((res) => {
-                    dispatch({type:"FETCH_ANNOUNCEMENTS",payload:res.data});
-            });
-    },[announcements]);
+        axios.get(`http://localhost:8000/api/announcements/`).then((res) => {
+            dispatch({ type: 'FETCH_ANNOUNCEMENTS', payload: res.data });
+        });
+    }, [announcements]);
 
     const handleViewAnnouncement = (id) => {
-      
-        announcements.map(a=>{
-            if(a._id===id){
+        announcements.map((a) => {
+            if (a._id === id) {
                 setTitle(a.title);
                 setSubtitle(a.subtitle);
                 setDetails(a.details);
@@ -33,7 +28,7 @@ const Announcements = () => {
             }
         });
         setShowModalFlag(true);
-    }
+    };
 
     const handleModalHidden = () => {
         setShowModalFlag(false);
@@ -41,46 +36,58 @@ const Announcements = () => {
         setSubtitle('');
         setDetails('');
         setADate('');
-    }
+    };
 
-    return (<>
-                <div className='announcement-section'>
-                    <div class='announcement-section-title'>Announcements</div>
+    return (
+        <>
+            <div className='announcement-section'>
+                <div className='announcement-section-title'>Announcements</div>
 
-                    <ul className='announcement-section-item'>
-                        {announcements.map(a=>{
-                            return (
-                                    <li>
-                                        <p className='announcement-item-title'>{a.title}</p>
-                                        <p className='announcement-item-date'>{formatDateString(a.date)}</p>
-                                        <p className='announcement-item-details'>{a.subtitle}</p>
-                                        <button className='myButton btn btn-success' onClick={() => handleViewAnnouncement(a._id)}>Read More</button>
-                                    </li>
-                            );
-                        })}
-                    </ul>
-                </div>
+                <ul className='announcement-section-item'>
+                    {announcements?.map((a) => {
+                        return (
+                            <li>
+                                <p className='announcement-item-title'>
+                                    {a.title}
+                                </p>
+                                <p className='announcement-item-date'>
+                                    {formatDateString(a.date)}
+                                </p>
+                                <p className='announcement-item-details'>
+                                    {a.subtitle}
+                                </p>
+                                <button
+                                    className='myButton btn btn-success'
+                                    onClick={() =>
+                                        handleViewAnnouncement(a._id)
+                                    }
+                                >
+                                    Read More
+                                </button>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
 
-
-                <Modal
-				show={showModalFlag}
-				onHide={() => handleModalHidden()}
-                dialogClassName="modal-90w"
-				keyboard={false}
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>
-                            View Announcement
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className='view-announcement-section'>
-                            <p className='view-announcement-title'>{title}</p>
-                            <p className='view-announcement-date'>{aDate}</p>
-                            <p className='view-announcement-details'>{details}</p>
-                        </div>
-                    </Modal.Body>
-                </Modal>
-            </>);
-}
+            <Modal
+                show={showModalFlag}
+                onHide={() => handleModalHidden()}
+                dialogClassName='modal-90w'
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>View Announcement</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='view-announcement-section'>
+                        <p className='view-announcement-title'>{title}</p>
+                        <p className='view-announcement-date'>{aDate}</p>
+                        <p className='view-announcement-details'>{details}</p>
+                    </div>
+                </Modal.Body>
+            </Modal>
+        </>
+    );
+};
 export default Announcements;

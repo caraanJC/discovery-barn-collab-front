@@ -20,7 +20,7 @@ export function formatDateString(date) {
 
 export function renderActiveTags(flag) {
     if (flag === true) {
-        return <span class='badge bg-success'>Active</span>;
+        return <span className='badge bg-success'>Active</span>;
     }
-    return <span class='badge bg-danger'>Inactive</span>;
+    return <span className='badge bg-danger'>Inactive</span>;
 }
