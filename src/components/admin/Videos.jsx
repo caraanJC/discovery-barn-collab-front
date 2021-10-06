@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Modal, Form, Button, ProgressBar } from 'react-bootstrap';
+import firebaseApp from './firebase';
 
 import {
     getStorage,
