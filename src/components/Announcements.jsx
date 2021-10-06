@@ -16,6 +16,7 @@ const Announcements = () => {
         axios.get(`http://localhost:8000/api/announcements/`).then((res) => {
             dispatch({ type: 'FETCH_ANNOUNCEMENTS', payload: res.data });
         });
+        //eslint-disable-next-line
     }, [announcements]);
 
     const handleViewAnnouncement = (id) => {
@@ -26,6 +27,7 @@ const Announcements = () => {
                 setDetails(a.details);
                 setADate(formatDateString(a.date));
             }
+            return a;
         });
         setShowModalFlag(true);
     };

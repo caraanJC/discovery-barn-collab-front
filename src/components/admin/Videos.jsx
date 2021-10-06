@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Modal, Form, Button, ProgressBar } from 'react-bootstrap';
-import firebaseApp from './firebase';
+
 import {
     getStorage,
     ref,
@@ -51,6 +51,7 @@ const Videos = (props) => {
         axios.get('http://localhost:8000/api/programs').then((res) => {
             dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
         });
+        //eslint-disable-next-line
     }, []);
 
     const handleOnUploadFileChange = (e) => {
