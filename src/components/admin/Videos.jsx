@@ -3,15 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Modal, Form, Button, ProgressBar } from 'react-bootstrap';
-
-// import firebaseApp from './firebase';
-
+import firebaseApp from './firebase';
 import {
     getStorage,
     ref,
     uploadBytesResumable,
     getDownloadURL,
-} from '@firebase/storage';
+} from 'firebase/storage';
 //import Compress from "react-image-file-resizer";
 import { formatDate, renderActiveTags } from '../../helper/functions';
 import { v4 as uuidv4 } from 'uuid';

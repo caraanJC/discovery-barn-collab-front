@@ -44,7 +44,14 @@ const Announcements = () => {
                 <div className='announcement-section-title'>Announcements</div>
 
                 <ul className='announcement-section-item'>
-                    {announcements?.map((a) => {
+                    {announcements.length < 1 && (
+                        <li>
+                            <p className='mt-3 text-center'>
+                                <i>No Announcements</i>
+                            </p>
+                        </li>
+                    )}
+                    {announcements.map((a) => {
                         return (
                             <li>
                                 <p className='announcement-item-title'>

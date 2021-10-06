@@ -20,37 +20,31 @@ function App() {
 		if (sessionStorage.getItem('adminToken') != null) {
 			dispatch({
 				type: 'SET_ADMIN_TOKEN',
-				payload: sessionStorage.getItem('adminToken'),
+				payload: sessionStorage.getItem('adminToken')
 			});
 			dispatch({
 				type: 'SET_ADMIN_USER_SIGNED_IN',
-				payload: sessionStorage.getItem('adminUserSignedIn'),
+				payload: sessionStorage.getItem('adminUserSignedIn')
 			});
 		}
 		if (sessionStorage.getItem('parentToken') != null) {
 			dispatch({
 				type: 'SET_PARENT_TOKEN',
-				payload: sessionStorage.getItem('parentToken'),
+				payload: sessionStorage.getItem('parentToken')
 			});
 			dispatch({
 				type: 'SET_PARENT_USER_SIGNED_IN',
-				payload: sessionStorage.getItem('parentUserSignedIn'),
+				payload: sessionStorage.getItem('parentUserSignedIn')
 			});
 		}
 	}, []);
 
 	const checkIfAuthenticated = () => {
-		if (
-			location.pathname.slice(0, 6).toLowerCase() === '/admin' &&
-			location.pathname !== '/admin'
-		) {
+		if (location.pathname.slice(0, 6).toLowerCase() === '/admin' && location.pathname !== '/admin') {
 			if (!adminToken) {
 				history.push('/admin');
 			}
-		} else if (
-			location.pathname !== '/' &&
-			location.pathname !== '/admin'
-		) {
+		} else if (location.pathname !== '/' && location.pathname !== '/admin') {
 			if (!parentToken) {
 				history.push('/');
 			}
@@ -61,10 +55,7 @@ function App() {
 	return (
 		<div className='App'>
 			<Switch>
-				<Route
-					path='/admin'
-					component={adminToken ? AdminApp : AdminLoginForm}
-				/>
+				<Route path='/admin' component={adminToken ? AdminApp : AdminLoginForm} />
 				<Route path='/' component={parentToken ? Main : LoginForm} />
 			</Switch>
 		</div>
@@ -72,16 +63,3 @@ function App() {
 }
 
 export default App;
-
-/*<nav>
-				<Link to='/'>Home</Link>
-				<Link to='/admin'>Admin</Link>
-				<Link
-					to='/'
-					onClick={() => {
-						dispatch({ type: 'LOGOUT' });
-					}}
-				>
-					Logout
-				</Link>
-			</nav>*/

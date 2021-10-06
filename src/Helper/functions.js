@@ -18,6 +18,12 @@ export function formatDateString(date) {
     return d;
 }
 
+export function formatParagraph(myStr) {
+    return myStr
+        .split('\n')
+        .map((str) => <p className='mb-4'>{str === '' ? ' ' : str}</p>);
+}
+
 export function renderActiveTags(flag) {
     if (flag === true) {
         return <span className='badge bg-success'>Active</span>;
