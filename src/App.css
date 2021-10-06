@@ -1180,7 +1180,8 @@ tr.MuiTableRow-root:nth-child(even) > td {
 	list-style: none;
 }
 
-.announcement-section-title {
+.announcement-section-title,
+.submissions-section-title {
 	font-size: 20px;
 	font-weight: 600;
 	color: #444444;
@@ -1202,6 +1203,12 @@ tr.MuiTableRow-root:nth-child(even) > td {
 .announcement-section-item > li:last-child {
 	border: none;
 	margin-bottom: 0px;
+}
+
+.submissions-section-body {
+	min-height: 500px;
+	background-color: #f8f9fa;
+	padding: 30px 35px;
 }
 
 .bg-light-gray {
@@ -1270,4 +1277,42 @@ tr.MuiTableRow-root:nth-child(even) > td {
 	font-size: 15px;
 	margin: 5px 0px;
 	color: #9d9d9d;
+}
+
+.submission-image {
+	width: 100%;
+	max-width: 120px;
+	margin: 15px;
+}
+
+.submission-info-student {
+	font-size: 25px;
+	font-weight: 700;
+	color: #4cac6a;
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+}
+
+.submission-info-program {
+	font-size: 15px;
+	font-weight: 800;
+	color: #ff9879;
+	text-align: left;
+	margin: 0px;
+	text-transform: uppercase;
+	padding: 0px;
+}
+
+.submission-upload-button {
+	font-weight: 700;
+	padding: 12px;
+}
+
+.submission-nosubmission {
+	font-weight: 700;
+	font-size: 26px;
+	color: #ddd;
+	font-style: italic;
+	text-align: center;
 }

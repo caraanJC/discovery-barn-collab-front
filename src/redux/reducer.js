@@ -46,15 +46,6 @@ const reducer = (state = initState, action) => {
 			return { ...state, parents: action.payload };
 		case 'FETCH_STUDENTS':
 			return { ...state, students: action.payload };
-		case 'FETCH_STUDENT':
-			const newStudent = state.students?.find((student) => student._id === action.payload._id);
-			if (newStudent) {
-				const index = state.students.findIndex((student) => student._id === newStudent._id);
-				let newStudents = [...state.students];
-				newStudents[index] = action.payload;
-				return { ...state, students: newStudents };
-			}
-			return { ...state, students: [...state.students, action.payload] };
 		case 'FETCH_VIDEOS':
 			return { ...state, videos: action.payload };
 		case 'FETCH_PARENT_CHILDREN':
