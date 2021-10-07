@@ -3,12 +3,22 @@ import Announcements from './Announcements';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Route } from 'react-router-dom';
+import axios from 'axios';
 
 const Dashboard = () => {
 	const parentChildren = useSelector((state) => state.parentChildren);
 	const dispatch = useDispatch();
 	const childSelected = useSelector((state) => state.childSelected);
 	const childProgramSelected = useSelector((state) => state.childProgramSelected);
+
+	useEffect(() => {
+		axios.get(`http://localhost:8000/api/students/${childSelected}/submissions/getSubmissions`).then((res) => {
+			dispatch({
+				type: 'FETCH_SUBMISSIONS',
+				payload: res.data
+			});
+		});
+	}, [childSelected]);
 
 	const handleOnChange = (e) => {
 		let child = e.target.value;

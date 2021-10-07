@@ -4,7 +4,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { useHistory } from 'react-router';
 
@@ -12,6 +12,7 @@ const Calendar = ({ childProgram, childSelected }) => {
 	const [events, setEvents] = useState([]);
 	const history = useHistory();
 	const studentSubmissions = useSelector((state) => state.submissions);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (childProgram !== '') {
@@ -32,7 +33,7 @@ const Calendar = ({ childProgram, childSelected }) => {
 		} else {
 			setEvents([]);
 		}
-	}, [childProgram, childSelected]);
+	}, [childSelected, studentSubmissions, childProgram]);
 
 	const handleOnEventClicked = (taskName) => {
 		history.push(`/view-task/${taskName}`);
