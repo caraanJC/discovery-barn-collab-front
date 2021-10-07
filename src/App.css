@@ -1316,3 +1316,15 @@ tr.MuiTableRow-root:nth-child(even) > td {
 	font-style: italic;
 	text-align: center;
 }
+
+a.fc-daygrid-event {
+	white-space: normal;
+}
+
+a.fc-daygrid-event.fc-daygrid-dot-event.fc-event {
+	align-items: normal;
+}
+
+div.fc-daygrid-event-dot {
+	margin-top: 6px;
+}
