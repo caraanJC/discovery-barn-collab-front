@@ -1192,7 +1192,7 @@ tr.MuiTableRow-root:nth-child(even) > td {
 }
 
 .announcement-section-item {
-	padding: 10px;
+	padding: 15px;
 }
 
 .announcement-section-item > li {
@@ -1365,5 +1365,9 @@ div.fc-daygrid-event-dot {
 }
 
 #iframe {
+	display: none;
+}
+
+.moreText {
 	display: none;
 }

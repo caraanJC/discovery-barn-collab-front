@@ -1,4 +1,4 @@
-import { Route, Link, Switch } from 'react-router-dom';
+import { Route, Link, Switch, Redirect } from 'react-router-dom';
 import Users from './Users';
 import Logs from './Logs';
 import Programs from './Programs';
@@ -77,7 +77,7 @@ const AdminApp = () => {
 								<div className='sb-sidenav-menu-heading'>Maintenance</div>
 								<Link to='/admin/programs' className='nav-link'>
 									<div className='sb-nav-link-icon'>
-										<i className='fa fa-clipboard'></i>
+										<i className='fa fa-list'></i>
 									</div>
 									Programs
 								</Link>
@@ -101,13 +101,13 @@ const AdminApp = () => {
 								</Link>
 								<Link to='/admin/announcements' className='nav-link'>
 									<div className='sb-nav-link-icon'>
-										<i className='fa fa-film'></i>
+										<i className='fa fa-calendar'></i>
 									</div>
 									Announcements
 								</Link>
 								<Link to='/admin/submissions' className='nav-link'>
 									<div className='sb-nav-link-icon'>
-										<i className='fa fa-film'></i>
+										<i className='fa fa-clipboard'></i>
 									</div>
 									Submissions
 								</Link>
@@ -130,6 +130,7 @@ const AdminApp = () => {
 							<Route exact path='/admin/videos' render={() => <Videos />} />
 							<Route exact path='/admin/announcements' render={() => <Announcements />} />
 							<Route exact path='/admin/submissions' render={() => <Submissions />} />
+							<Redirect to='/admin' />
 						</Switch>
 					</main>
 					<footer className='py-4 bg-light mt-auto'>

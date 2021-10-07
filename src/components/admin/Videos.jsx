@@ -7,7 +7,7 @@ import firebaseApp from './firebase';
 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 //import Compress from "react-image-file-resizer";
-import { formatDate, renderActiveTags } from '../../helper/functions';
+import { formatDate, renderActiveTags, handleShowMoreText, limitShownText } from '../../helper/functions';
 import { v4 as uuidv4 } from 'uuid';
 
 const Videos = (props) => {
@@ -275,6 +275,19 @@ const Videos = (props) => {
 		}
 	};
 
+	const displayFileLink = (path, type) => {
+		return (
+			path !== '' &&
+			path !== null &&
+			path !== undefined && (
+				<span className='viewUploadedFileBtn' onClick={() => handleViewFileModal(path, type)}>
+					{path.slice(0, 35)}
+					{path.slice(0, 35) !== path && '...'}
+				</span>
+			)
+		);
+	};
+
 	return (
 		<>
 			<div className='container-fluid  mt-4'>
@@ -289,7 +302,9 @@ const Videos = (props) => {
 							},
 							{
 								title: 'Description',
-								field: 'description'
+								field: 'description',
+								width: '30%',
+								render: (rowData) => limitShownText(rowData.description, rowData._id)
 							},
 							{
 								title: 'Program',
@@ -302,22 +317,12 @@ const Videos = (props) => {
 							{
 								title: 'Thumbnail',
 								field: 'thumbnail_path',
-								render: (rowData) =>
-									rowData.thumbnail_path !== null && (
-										<span className='viewUploadedFileBtn' onClick={() => handleViewFileModal(rowData.thumbnail_path, 'IMG')}>
-											Click To See Image
-										</span>
-									)
+								render: (rowData) => displayFileLink(rowData.thumbnail_path, 'IMG')
 							},
 							{
 								title: 'Video',
 								field: 'video_path',
-								render: (rowData) =>
-									rowData.video_path !== null && (
-										<span className='viewUploadedFileBtn' onClick={() => handleViewFileModal(rowData.video_path, 'VID')}>
-											Click To View Video
-										</span>
-									)
+								render: (rowData) => displayFileLink(rowData.video_path, 'VID')
 							},
 							{
 								title: 'Active Flag',

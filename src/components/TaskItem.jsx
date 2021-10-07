@@ -122,10 +122,13 @@ const TaskItem = (props) => {
 			}
 			return program;
 		});
-		const targetChild = parentChildren.filter((child) => child._id === childSelected);
-		setStudent(`${targetChild[0].first_name} ${targetChild[0].last_name}`);
-		setStudentID(`${targetChild[0]._id}`);
-	}, [childSelected, dispatch, schoolPrograms, parentChildren, childProgramSelected]);
+		parentChildren.filter((child) => {
+			if (child._id === childSelected) {
+				setStudent(`${child.first_name} ${child.last_name}`);
+				setStudentID(child._id);
+			}
+		});
+	}, [childSelected, childProgramSelected, dispatch, parentChildren, schoolPrograms]);
 
 	useEffect(() => {
 		programTasks.filter((task) => {

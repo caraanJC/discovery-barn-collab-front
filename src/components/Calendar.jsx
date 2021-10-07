@@ -4,25 +4,27 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { useHistory } from 'react-router';
 
-const Calendar = (props) => {
-	const { childProgram, childSelected } = props;
+const Calendar = ({ childProgram, childSelected }) => {
 	const [events, setEvents] = useState([]);
 	const history = useHistory();
+	const studentSubmissions = useSelector((state) => state.submissions);
 
 	useEffect(() => {
 		if (childProgram !== '') {
 			axios.get(`http://localhost:8000/api/programs/program-tasks/${childProgram}`).then((res) => {
 				let tasks = res.data.map((task) => {
 					let title = task.title;
+					let status = getChildTaskStatus(title);
 					return {
 						id: uuid(),
 						title: title,
 						start: task.deadline,
 						end: task.deadline,
-						color: 'green'
+						color: status === 'COMPLETED' ? 'green' : 'red'
 					};
 				});
 				setEvents(tasks);
@@ -30,10 +32,21 @@ const Calendar = (props) => {
 		} else {
 			setEvents([]);
 		}
-	}, [childProgram]);
+	}, [childProgram, childSelected]);
 
 	const handleOnEventClicked = (taskName) => {
 		history.push(`/view-task/${taskName}`);
+	};
+
+	const getChildTaskStatus = (taskTitle) => {
+		let status = 'PENDING';
+		studentSubmissions.map((file) => {
+			if (file.task_title === taskTitle) {
+				status = 'COMPLETED';
+			}
+			return file;
+		});
+		return status;
 	};
 
 	return (

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { formatDate, renderActiveTags } from '../../helper/functions';
+import { formatDate, renderActiveTags, handleShowMoreText, limitShownText } from '../../helper/functions';
 const Announcements = (props) => {
 	const data = useSelector((state) => state.announcements);
 	const dispatch = useDispatch();
@@ -136,7 +136,8 @@ const Announcements = (props) => {
 							},
 							{
 								title: 'Details',
-								field: 'details'
+								field: 'details',
+								render: (rowData) => limitShownText(rowData.details, rowData._id)
 							},
 							{
 								title: 'Date',
