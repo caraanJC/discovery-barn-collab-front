@@ -18,6 +18,9 @@ const Main = (props) => {
 		axios.get(`http://localhost:8000/api/parents/get-students/${parentToken}`).then((res) => {
 			dispatch({ type: 'FETCH_PARENT_CHILDREN', payload: res.data });
 		});
+		axios.get(`http://localhost:8000/api/programs/`).then((res) => {
+			dispatch({ type: 'FETCH_PROGRAMS', payload: res.data });
+		});
 	}, []);
 
 	const onToggleSideNav = () => {
@@ -99,7 +102,7 @@ const Main = (props) => {
 					<main>
 						<Switch>
 							<Route path='/view-task/:taskTitle' render={(props) => <TaskItem {...props} />} />
-							<Route path='/videos/:id' render={() => <WatchVideo />} />
+							<Route path='/videos/:id' render={(props) => <WatchVideo {...props} />} />
 							<Route path='/videos' render={() => <Videos />} />
 							<Route path='/dashboard' render={() => <Dashboard />} />
 							<Route path='/tasks' component={Tasks} />

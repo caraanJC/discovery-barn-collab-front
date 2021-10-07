@@ -6,9 +6,9 @@ import { formatDateString, formatParagraph } from '../helper/functions';
 import { Modal, Form, Button, ProgressBar } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { toNormalTime } from '../helper/index';
+import TaskSubmission from './TaskSubmission';
 
 import firebaseApp from './admin/firebase';
-
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 const TaskItem = (props) => {
@@ -57,7 +57,8 @@ const TaskItem = (props) => {
 		const metadata = {
 			contentType: fileToUpload.type
 		};
-		const storageRef = ref(storage, `${student.split(' ').join('')}/${taskTitle}/${fileToUpload.name}`);
+		const randomStr = uuidv4();
+		const storageRef = ref(storage, `${childSelected}/${childProgramSelected}/` + randomStr + '__DBP54321__' + fileToUpload.name);
 		const uploadFile = uploadBytesResumable(storageRef, fileToUpload, metadata);
 		uploadFile.on(
 			'state_changed',
@@ -88,6 +89,7 @@ const TaskItem = (props) => {
 						.post(`http://localhost:8000/api/students/${studentID}/submissions/upload`, {
 							file_path: url,
 							file_name: fileToUpload.name,
+							reference: `${childSelected}/${childProgramSelected}/` + randomStr + '__DBP54321__' + fileToUpload.name,
 							task_title: taskTitle
 						})
 						.then((res) => {
@@ -114,11 +116,15 @@ const TaskItem = (props) => {
 			dispatch({ type: 'SET_PROGRAM_TASKS', payload: [] });
 		}
 
-		const targetProgram = schoolPrograms.filter((program) => program._id === childProgramSelected);
+		schoolPrograms.filter((program) => {
+			if (program._id === childProgramSelected) {
+				setProgram(program.name);
+			}
+			return program;
+		});
 		const targetChild = parentChildren.filter((child) => child._id === childSelected);
 		setStudent(`${targetChild[0].first_name} ${targetChild[0].last_name}`);
 		setStudentID(`${targetChild[0]._id}`);
-		console.log(targetProgram);
 	}, [childSelected, dispatch, schoolPrograms, parentChildren, childProgramSelected]);
 
 	useEffect(() => {
@@ -142,6 +148,9 @@ const TaskItem = (props) => {
 	const handleGoBack = () => {
 		props.history.goBack();
 	};
+
+	const submissionCountForTask = studentSubmissions.filter((submission) => submission.task_title === taskTitle).length;
+
 	return (
 		<>
 			<div className='container-fluid mt-4'>
@@ -169,25 +178,33 @@ const TaskItem = (props) => {
 									</div>
 								</div>
 								<div className='submission-uploaded-files'>
-									{!studentSubmissions.find((submission) => submission.task_title === taskTitle) ? (
-										<div className='submission-nosubmission'>No Submissions</div>
-									) : (
-										<div className='submission-nosubmission'>
-											{toNormalTime(studentSubmissions.find((submission) => submission.task_title === taskTitle).date_submitted) > dueDateRaw ? 'Late' : 'Submitted'}
-										</div>
-									)}
+									{submissionCountForTask <= 0 && <div className='submission-nosubmission'>No Submissions</div>}
+									{studentSubmissions.map((submission) => {
+										if (submission.task_title === taskTitle) {
+											return (
+												<TaskSubmission
+													key={submission._id}
+													submissionId={submission._id}
+													filePath={submission.file_path}
+													fileName={submission.file_name}
+													dateSubmitted={submission.date_submitted}
+													reference={submission.reference}
+												/>
+											);
+										}
+										return '';
+									})}
 								</div>
-								{!studentSubmissions.find((submission) => submission.task_title === taskTitle) && (
-									<button className='myButton btn-success btn btn-block submission-upload-button' onClick={handleShowModal}>
-										Upload
-									</button>
-								)}
+
+								<button className='myButton btn-success btn btn-block submission-upload-button' onClick={handleShowModal}>
+									Upload
+								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
+			<iframe title='iframe' name='iframe' id='iframe'></iframe>
 			<Modal show={uploadModalHidden} onHide={handleUploadModalHidden} keyboard={false}>
 				<Modal.Header closeButton>
 					<Modal.Title>Upload Work</Modal.Title>
@@ -196,7 +213,7 @@ const TaskItem = (props) => {
 					<p id='appmessage'>{appMessage}</p>
 					<Form.Group className='mb-3'>
 						<Form.Label>Choose File To Upload*</Form.Label>
-						<Form.Control type='file' onChange={handleOnUploadFileChange} accept='image/png, image/gif, image/jpeg, video/mp4, video/x-m4v, video/*' />
+						<Form.Control type='file' onChange={handleOnUploadFileChange} />
 						<ProgressBar className='mt-2' variant='success' now={uploadProgress} />
 					</Form.Group>
 				</Modal.Body>

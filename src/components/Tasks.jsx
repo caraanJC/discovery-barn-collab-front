@@ -10,6 +10,7 @@ const Tasks = (props) => {
 	const students = useSelector((state) => state.parentChildren);
 	const childSelected = useSelector((state) => state.childSelected);
 	const childProgramSelected = useSelector((state) => state.childProgramSelected);
+	const studentSubmissions = useSelector((state) => state.submissions);
 	const programTasks = useSelector((state) => state.programTasks);
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -25,12 +26,34 @@ const Tasks = (props) => {
 			}
 		}
 		fetchData();
+	}, [childSelected, dispatch, childProgramSelected]);
+
+	useEffect(() => {
+		if (childSelected !== '') {
+			axios.get(`http://localhost:8000/api/students/${childSelected}/submissions/getSubmissions`).then((res) => {
+				dispatch({
+					type: 'FETCH_SUBMISSIONS',
+					payload: res.data
+				});
+			});
+		}
 	}, [childSelected]);
+
+	const getChildTaskStatus = (taskTitle) => {
+		let status = 'PENDING';
+		studentSubmissions.map((file) => {
+			if (file.task_title === taskTitle) {
+				status = 'COMPLETED';
+			}
+			return file;
+		});
+		return status;
+	};
 
 	const handleOnChange = (e) => {
 		let child = e.target.value;
-		let childprogram = e.target.childNodes[e.target.selectedIndex].getAttribute('data-program-id');
-		dispatch({ type: 'SET_CHILD_PROGRAM_SELECTED', payload: childprogram });
+		let childProgram = e.target.childNodes[e.target.selectedIndex].getAttribute('data-program-id');
+		dispatch({ type: 'SET_CHILD_PROGRAM_SELECTED', payload: childProgram });
 		dispatch({ type: 'SET_CHILD_SELECTED', payload: child });
 	};
 
@@ -80,7 +103,7 @@ const Tasks = (props) => {
 										</Button>
 									</Card.Body>
 									<Card.Footer className='text-muted'>
-										<p className={`task-status ${task.status === 'COMPLETED' ? 'completed' : ''}`}>{task.status === undefined || task.status === '' ? 'PENDING' : task.status}</p>
+										<p className={`task-status ${getChildTaskStatus(task.title).toLowerCase()}`}>{getChildTaskStatus(task.title)}</p>
 									</Card.Footer>
 								</Card>
 							))}
