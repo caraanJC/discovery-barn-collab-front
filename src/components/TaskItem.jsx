@@ -5,7 +5,6 @@ import axios from 'axios';
 import { formatDateString, formatParagraph } from '../helper/functions';
 import { Modal, Form, Button, ProgressBar } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
-import { toNormalTime } from '../helper/index';
 import TaskSubmission from './TaskSubmission';
 
 import firebaseApp from './admin/firebase';
@@ -20,7 +19,6 @@ const TaskItem = (props) => {
 	const studentSubmissions = useSelector((state) => state.submissions);
 	const childSelected = useSelector((state) => state.childSelected);
 	const [dueDate, setDueDate] = useState('');
-	const [dueDateRaw, setDueDateRaw] = useState('');
 	const [description, setDescription] = useState('');
 	const [student, setStudent] = useState('');
 	const [studentID, setStudentID] = useState('');
@@ -127,6 +125,7 @@ const TaskItem = (props) => {
 				setStudent(`${child.first_name} ${child.last_name}`);
 				setStudentID(child._id);
 			}
+			return true;
 		});
 	}, [childSelected, childProgramSelected, dispatch, parentChildren, schoolPrograms]);
 
@@ -135,17 +134,17 @@ const TaskItem = (props) => {
 			if (task.title === taskTitle) {
 				setDescription(formatParagraph(task.description));
 				setDueDate(formatDateString(task.deadline));
-				setDueDateRaw(toNormalTime(task.deadline));
 			}
 			return task;
 		});
 	}, [programTasks, taskTitle]);
 
 	useEffect(() => {
-		if (!studentID) return;
-		axios.get(`http://localhost:8000/api/students/${studentID}/submissions/getSubmissions`).then((res) => {
-			dispatch({ type: 'FETCH_SUBMISSIONS', payload: res.data });
-		});
+		if (studentID !== '') {
+			axios.get(`http://localhost:8000/api/students/${studentID}/submissions/getSubmissions`).then((res) => {
+				dispatch({ type: 'FETCH_SUBMISSIONS', payload: res.data });
+			});
+		}
 	}, [studentID, dispatch]);
 
 	const handleGoBack = () => {

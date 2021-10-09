@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { toNormalTime } from '../helper';
 import { useHistory } from 'react-router';
 import { Button, Card } from 'react-bootstrap';
@@ -12,32 +11,31 @@ const Tasks = (props) => {
 	const childProgramSelected = useSelector((state) => state.childProgramSelected);
 	const studentSubmissions = useSelector((state) => state.submissions);
 	const programTasks = useSelector((state) => state.programTasks);
+	const [program, setProgram] = useState('');
 	const dispatch = useDispatch();
 	const history = useHistory();
 
 	useEffect(() => {
-		async function fetchData() {
-			if (childSelected !== '') {
-				await axios.get(`http://localhost:8000/api/programs/${childProgramSelected}/getTasks`).then((res) => {
-					dispatch({ type: 'SET_PROGRAM_TASKS', payload: res.data });
-				});
-			} else {
-				dispatch({ type: 'SET_PROGRAM_TASKS', payload: [] });
-			}
-		}
-		fetchData();
-	}, [childSelected, dispatch, childProgramSelected]);
-
-	useEffect(() => {
 		if (childSelected !== '') {
-			axios.get(`http://localhost:8000/api/students/${childSelected}/submissions/getSubmissions`).then((res) => {
-				dispatch({
-					type: 'FETCH_SUBMISSIONS',
-					payload: res.data
+			axios.get(`http://localhost:8000/api/programs/${childProgramSelected}/getTasks`).then((res) => {
+				dispatch({ type: 'SET_PROGRAM_TASKS', payload: res.data });
+
+				axios.get(`http://localhost:8000/api/students/${childSelected}/submissions/getSubmissions`).then((res) => {
+					dispatch({
+						type: 'FETCH_SUBMISSIONS',
+						payload: res.data
+					});
+					axios.get(`http://localhost:8000/api/programs/${childProgramSelected}`).then((res) => {
+						setProgram(res.data.name);
+					});
 				});
 			});
+		} else {
+			dispatch({ type: 'FETCH_SUBMISSIONS', payload: [] });
+			dispatch({ type: 'SET_PROGRAM_TASKS', payload: [] });
+			setProgram('');
 		}
-	}, [childSelected]);
+	}, [childSelected, childProgramSelected]);
 
 	const getChildTaskStatus = (taskTitle) => {
 		let status = 'PENDING';
@@ -82,6 +80,9 @@ const Tasks = (props) => {
 						</select>
 					</div>
 					<hr />
+					<div className='row'>
+						<h3 className='mt-1 mb-3 program-title'>{program}</h3>
+					</div>
 					<div className='d-flex flex-wrap flex-row align-items-center justify-content-center'>
 						{programTasks.length > 0 &&
 							programTasks.map((task) => (

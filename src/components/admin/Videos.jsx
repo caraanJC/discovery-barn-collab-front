@@ -7,7 +7,7 @@ import firebaseApp from './firebase';
 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 //import Compress from "react-image-file-resizer";
-import { formatDate, renderActiveTags, handleShowMoreText, limitShownText } from '../../helper/functions';
+import { formatDate, renderActiveTags, limitShownText } from '../../helper/functions';
 import { v4 as uuidv4 } from 'uuid';
 
 const Videos = (props) => {
@@ -445,7 +445,7 @@ const Videos = (props) => {
 					</Form.Group>
 				</Modal.Body>
 				<Modal.Footer className='py-3'>
-					<Button className='myButton' disabled={uploadState} onClick={() => handleOnFileUpload()}>
+					<Button className='myButton btn-success' disabled={uploadState} onClick={() => handleOnFileUpload()}>
 						<span className={loadingBtn}>
 							<span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Uploading...
 						</span>

@@ -1,8 +1,8 @@
 import Calendar from './Calendar';
 import Announcements from './Announcements';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
 const Dashboard = () => {
@@ -18,7 +18,7 @@ const Dashboard = () => {
 				payload: res.data
 			});
 		});
-	}, [childSelected]);
+	}, [childSelected, dispatch]);
 
 	const handleOnChange = (e) => {
 		let child = e.target.value;
@@ -51,7 +51,7 @@ const Dashboard = () => {
 						<Calendar childProgram={childProgramSelected} childSelected={childSelected} />
 					</div>
 					<div className='col-xl-3 col-lg-4 col-md-5 col-sm-12'>
-						<Announcements />
+						<Announcements key={uuidv4()} />
 					</div>
 				</div>
 			</div>

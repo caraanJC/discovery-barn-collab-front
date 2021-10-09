@@ -2,7 +2,8 @@ import MaterialTable from 'material-table';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { Modal, Form, Button } from 'react-bootstrap';
+import firebaseApp from './firebase';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 const Submissions = (props) => {
 	const [students, setStudents] = useState([]);
@@ -34,7 +35,6 @@ const Submissions = (props) => {
 				setProgramTasks(res.data);
 				axios.get(`http://localhost:8000/api/students/program-students/${programSelected}`).then((res) => {
 					setStudents(res.data);
-					console.log({ program: programSelected, task: programTaskTitleSelected, student: studentSelected });
 					axios.post(`http://localhost:8000/api/students/all-submissions`, { program: programSelected, task: programTaskTitleSelected, student: studentSelected }).then((res) => {
 						setSubmissions(res.data);
 					});
@@ -69,7 +69,46 @@ const Submissions = (props) => {
 		}
 	};
 
-	const handleFileDownload = (file) => {};
+	const handleFileDownload = (reference) => {
+		const storage = getStorage();
+		getDownloadURL(ref(storage, reference))
+			.then((url) => {
+				const xhr = new XMLHttpRequest();
+				xhr.responseType = 'blob';
+				xhr.onload = (e) => {
+					const blob = xhr.response;
+					const contentDispo = e.currentTarget.getResponseHeader('Content-Disposition');
+					const fileName = contentDispo.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1].split("''")[1];
+					const link = document.createElement('a');
+					link.href = URL.createObjectURL(blob);
+					link.download = fileName;
+					link.click();
+				};
+				xhr.open('GET', url);
+				xhr.send();
+			})
+			.catch((error) => {
+				switch (error.code) {
+					case 'storage/object-not-found':
+						console.log('storage/object-not-found');
+						break;
+
+					case 'storage/unauthorized':
+						console.log('storage/unauthorized');
+						break;
+
+					case 'storage/canceled':
+						console.log('storage/canceled');
+						break;
+
+					case 'storage/unknown':
+						console.log('storage/unknown');
+						break;
+					default:
+						break;
+				}
+			});
+	};
 	return (
 		<>
 			<div className='container-fluid mt-4'>
@@ -137,7 +176,7 @@ const Submissions = (props) => {
 							{
 								icon: 'download',
 								tooltip: 'Download File',
-								onClick: (rowData) => handleFileDownload(rowData._id)
+								onClick: (e, rowData) => handleFileDownload(rowData.reference)
 							}
 						]}
 						options={{

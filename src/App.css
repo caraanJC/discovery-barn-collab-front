@@ -1080,7 +1080,7 @@ tr.MuiTableRow-root:nth-child(even) > td {
 	max-width: 300px;
 }
 
-#programtitle {
+.program-title {
 	color: #4cac6a;
 }
 
@@ -1208,7 +1208,7 @@ tr.MuiTableRow-root:nth-child(even) > td {
 .submissions-section-body {
 	min-height: 400px;
 	background-color: #f8f9fa;
-	padding: 30px 35px;
+	padding: 30px 35px 45px 35px;
 }
 
 .bg-light-gray {

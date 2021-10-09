@@ -12,8 +12,8 @@ const Videos = (props) => {
 
 	const handleOnChange = (e) => {
 		let child = e.target.value;
-		let childprogram = e.target.childNodes[e.target.selectedIndex].getAttribute('data-program-id');
-		dispatch({ type: 'SET_CHILD_PROGRAM_SELECTED', payload: childprogram });
+		let childProgram = e.target.childNodes[e.target.selectedIndex].getAttribute('data-program-id');
+		dispatch({ type: 'SET_CHILD_PROGRAM_SELECTED', payload: childProgram });
 		dispatch({ type: 'SET_CHILD_SELECTED', payload: child });
 	};
 
@@ -56,9 +56,7 @@ const Videos = (props) => {
 			</div>
 			<hr />
 			<div className='row' id='programvideocontent'>
-				<h3 className='mt-1 mb-3' id='programtitle'>
-					{program}
-				</h3>
+				<h3 className='mt-1 mb-3 program-title'>{program}</h3>
 				{programVideos.length === 0 && childSelected !== '' && (
 					<i>
 						<h5>No Videos Available</h5>
